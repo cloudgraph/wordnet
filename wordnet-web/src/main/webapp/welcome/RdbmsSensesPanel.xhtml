@@ -1,0 +1,75 @@
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;"> 
+]>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+<body>
+<ui:composition>
+        <p:panel rendered="#{WordBean.hasWord}" style="width:100%;">
+        <p:spacer width="1" height="10"/>
+        <h:panelGrid width="100%" border="0" columns="2" columnClasses="AlignLeft,AlignRight"> 
+        <h:panelGrid width="40%" border="0" columns="3" columnClasses="AlignRight,AlignLeft,AlignLeft" cellpadding="4" cellspacing="4"> 
+            <h:graphicImage width="16" height="16" 
+                    url="/images/hexagon.png"/>      
+            <h:outputText value="#{WordBean.displayWord}" style="word-wrap: no; font-size:28px; font-weight: bold:"/>
+            <p:ajaxStatus style="width:16px;">    
+                <f:facet name="prestart">
+                <h:graphicImage width="16" height="16" 
+                    url="/images/ajax-loader3.gif"/>
+                </f:facet>
+                <f:facet name="error"> <h:outputText value="Error" />
+                </f:facet>
+                <f:facet name="success"> <h:outputText value="" />
+                </f:facet>
+                <f:facet name="default"> <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <h:graphicImage width="16" height="16" 
+                    url="/images/ajax-loader3.gif"/>                
+                </f:facet>
+                <f:facet name="complete"> <h:outputText value="" />
+                </f:facet>      
+            </p:ajaxStatus>
+        </h:panelGrid>
+        <p:commandButton id="rdbms_stats_btn" value="Graph Statistics" type="button"/>
+        <p:overlayPanel style="width:300px; font-size:12px;" for="rdbms_stats_btn" hideEffect="fade" > 
+           <h:panelGrid rowClasses="FormPanelRow" 
+                        columnClasses="FormLabelColumn,FormControlColumn,FormLabelColumn,FormControlColumn" 
+                        columns="2" width="95%" cellpadding="4" cellspacing="4" border="0">  
+                  <p:outputLabel styleClass="labelBold" 
+                      value="Assembly Time:" 
+                      title="Time in milliseconds taken to assemble the current word graph"/>
+                  <h:outputText  
+                      value="#{WordBean.wordnet.graphAssemblyTime} Milliseconds"
+                      title="Time in milliseconds taken to assemble the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel styleClass="labelBold" 
+                      value="Node Count:" 
+                      title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graphh"/>
+                  <h:outputText  
+                      value="#{WordBean.wordnet.graphNodeCount}"
+                      title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel   styleClass="labelBold" 
+                      value="Graph Depth:" 
+                      title="The depth of the current word graph"/>
+                  <h:outputText  
+                      value="#{WordBean.wordnet.graphDepth}"
+                      title="The depth of the current word graph">
+                  </h:outputText>                
+          </h:panelGrid>
+        
+        </p:overlayPanel> 
+        </h:panelGrid>
+        
+        <p:spacer width="1" height="20"/>
+        <ui:include src="RelationsPanel.xhtml" />    
+    </p:panel>
+</ui:composition>
+</body>
+</html>   

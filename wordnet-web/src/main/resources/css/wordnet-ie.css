@@ -1,0 +1,22 @@
+
+/* rounded corner tweaks for IE 8, 9 - uses HTML Components HTC */
+ 
+.ui-panel {
+    border-radius: 10px; 
+    behavior: url(/wordnet/resources/js/PIE.htc);
+}
+.ui-button {
+    border-radius: 10px; 
+    behavior: url(/wordnet/resources/js/PIE.htc);
+}
+.ui-panelmenu-header {
+    border-radius: 10px; 
+    behavior: url(/wordnet/resources/js/PIE.htc);
+}
+.ui-toolbar {
+    border-radius: 10px; 
+    behavior: url(/wordnet/resources/js/PIE.htc);
+}
+ 
+ 
+

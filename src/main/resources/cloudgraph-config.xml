@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cloudgraph:CloudGraphConfiguration  
+    xmlns:cloudgraph="http://www.cloudgraph.org/config">
+    <Property name="hbase.zookeeper.quorum">u16548889.onlinehome-server.com:2222,u16677374.onlinehome-server.com</Property> 
+       
+    <Property name="hbase.zookeeper.property.clientPort">2222</Property>  
+
+    <Property name="org.plasma.sdo.access.provider.hbase.ConnectionPoolMinSize">1</Property>    
+    <Property name="org.plasma.sdo.access.provider.hbase.ConnectionPoolMaxSize">5</Property>    
+
+    <Table name="DICTIONARY2" dataColumnFamilyName="f1">
+        <HashAlgorithm name="murmur"/>
+         
+       <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Lexdomains">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="lexdomainid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+        
+      <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Linktypes">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="linkid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+
+        <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Words">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="lemma"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="wordid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+        
+       <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Senses">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="words/wordid"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsets/synsetid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+
+        <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Synsets">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="pos"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="lexdomains/lexdomainname"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsetid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+        
+        <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Semlinks">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>                   
+                    <UserDefinedField path="linktypes/link"/>
+                     <!-- 
+                    <UserDefinedField path="linkType"/>
+                     -->
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsets/synsetid"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsets1/synsetid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+        
+        <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Lexlinks">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="linktypes/link"/>
+                     <!-- 
+                    <UserDefinedField path="linkType"/>
+                     -->
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsets/synsetid"/>
+                </RowKeyField>
+                 <RowKeyField>
+                    <UserDefinedField path="words/wordid"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="synsets1/synsetid"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="words1/wordid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+        
+        
+        <DataGraph uri="http://cloudgraph.org/examples/wordnet" type="Morphology">
+            <RowKeyModel>
+                <RowKeyField>
+                    <PredefinedField name="type" hash="false"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="pos"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="lemma"/>
+                </RowKeyField>
+                <RowKeyField>
+                    <UserDefinedField path="morphid"/>
+                </RowKeyField>
+            </RowKeyModel>
+            
+            <ColumnKeyModel>
+                <ColumnKeyField name="uri" hash="true"/>
+                <ColumnKeyField name="type"/>
+                <ColumnKeyField name="property"/>
+            </ColumnKeyModel>
+        </DataGraph>
+
+     </Table>
+    
+</cloudgraph:CloudGraphConfiguration>

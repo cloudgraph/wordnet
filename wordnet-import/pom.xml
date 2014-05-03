@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.cloudgraph</groupId>
+        <artifactId>wordnet</artifactId>
+        <version>0.5.1</version>
+    </parent>
+  <groupId>org.cloudgraph</groupId>
+  <artifactId>wordnet-import</artifactId>
+  <version>0.5.1</version>
+  <packaging>jar</packaging>
+  <name>wordnet-export</name>
+  <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
+  <url>http://wordnet.cloudgraph.org</url>
+  <licenses>   
+  </licenses>  
+  <scm>        
+      <url>https://github.com/cloudgraph/wordnet</url>
+      <connection></connection>
+  </scm>       
+  <developers> 
+      <developer>
+          <id>scinnamond</id>
+          <name>Scott Cinnamond</name>
+          <email>scott.cinnamond@cloudgraph.org</email>
+      </developer>
+  </developers>  
+               
+  <properties> 
+          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+          <plasma.version>1.1.9</plasma.version>
+          <cloudgraph.version>0.5.9</cloudgraph.version>
+  </properties>
+               
+  <repositories>
+      <repository>
+          <id>lib</id>
+          <name>lib</name>
+          <releases>
+                  <enabled>true</enabled>
+                  <checksumPolicy>ignore</checksumPolicy>
+          </releases>
+          <snapshots>
+                  <enabled>false</enabled>
+          </snapshots>
+          <url>file://${project.basedir}/lib</url>
+      </repository>
+	  <repository>
+		   <id>maven2-repository.dev.java.net</id>
+		   <name>Java.net Maven 2 Repository</name>
+		   <url>http://download.java.net/maven/2</url>
+	  </repository>
+  </repositories>
+  <pluginRepositories>                                  
+		 <pluginRepository>                                
+		 	<id>maven2-repository.dev.java.net</id>       
+		 	<name>Java.net Maven 2 Repository</name>      
+		 	<url>http://download.java.net/maven/2</url>   
+		 </pluginRepository>                               
+  </pluginRepositories>                                 
+               
+  <dependencies>     
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>3.8.1</version>
+	</dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.8</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+		<version>1.1.1</version>
+	</dependency>
+        <dependency>
+            <groupId>org.cloudgraph</groupId>
+            <artifactId>wordnet-model</artifactId>
+            <version>0.5.1</version>
+	</dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+          <executions>
+              <execution>
+                  <id>add-resource</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                  <goal>add-resource</goal>
+                  </goals>
+                  <configuration>
+                  <resources>
+                      <resource><directory>${basedir}/../src/main/resources</directory></resource>
+                  </resources>
+                  </configuration>
+              </execution>
+              <execution>
+                  <id>add-source</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>add-source</goal>
+                  </goals>
+                  <configuration>
+                    <sources>
+                      <source>${basedir}/target/generated-sources/java</source>
+                    </sources>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+              <source>1.6</source>
+              <target>1.6</target>
+              <encoding>UTF-8</encoding>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>attach-sources</id>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
+            <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-jar-plugin</artifactId>
+		        <configuration>
+		          <archive>
+		            <manifest>
+		              <addClasspath>true</addClasspath>
+		              <mainClass>org.cloudgraph.examples.wordnet.imprt.MultiImportDriver</mainClass>
+		            </manifest>
+		          </archive>
+		        </configuration>
+		    </plugin>
+            
+            <!--  
+               #assembles a standalone zip use:
+               mvn package 
+               
+              
+               Absolute paths cannot be stripped with the plugin directly. Use the below to get close, then a text editor
+               to get to a 'hadoop jar /home/lib/wikicorpus-parse-0.5.1.jar -libjars ${LIBJARS}' compatible classpath which must be comma delimited!! 
+               
+               mvn dependency:build-classpath -DexcludeScope=provided -Dmdep.pathSeparator=":" -Dmdep.prefix= -Dmdep.fileSeparator="/home/lib/" -Dmdep.outputFile=${project.build.directory}/classpath 
+                 
+                   
+	              
+            -->
+            <plugin>
+	          <artifactId>maven-assembly-plugin</artifactId>
+	          <version>2.4</version>
+	          <executions>
+	              <execution>
+	                  <id>assemble-zip</id>
+	                  <phase>package</phase>
+	                  <goals>
+	                      <goal>single</goal>
+	                  </goals>
+	              </execution>
+	          </executions>
+	          <configuration>
+	              <descriptors>
+	                  <descriptor>maven-assembly-dist.xml</descriptor>
+	              </descriptors>
+	          </configuration>
+	      </plugin>
+        </plugins>
+  </build>
+</project>
