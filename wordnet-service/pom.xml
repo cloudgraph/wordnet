@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.cloudgraph</groupId>
         <artifactId>wordnet</artifactId>
-        <version>0.5.1</version>
+        <version>0.5.2</version>
     </parent>
   <groupId>org.cloudgraph</groupId>
   <artifactId>wordnet-service</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <packaging>jar</packaging>
   <name>wordnet-service</name>
   <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
@@ -29,8 +29,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.1.9</plasma.version>
-          <cloudgraph.version>0.5.9</cloudgraph.version>
+          <plasma.version>1.2.2</plasma.version>
+          <cloudgraph.version>0.6.2</cloudgraph.version>
   </properties>
                
   <repositories>
@@ -79,8 +79,8 @@
         <dependency>
             <groupId>org.cloudgraph</groupId>
             <artifactId>wordnet-model</artifactId>
-            <version>0.5.1</version>
-	</dependency>
+            <version>0.5.2</version>
+	    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -155,12 +155,12 @@
 	                    </additionalClasspathElements>                  
 	                    <forkMode>once</forkMode>
 	                    <systemProperties>
-	                        <property><name>plasma.configuration</name><value>plasma-config.xml</value></property>
-	                        <property><name>fuml.configuration</name><value>fuml-config.xml</value></property>
 	                        <property><name>log4j.configuration</name><value>log4j.properties</value></property>
 	                    </systemProperties>
 	                    
 	                    <excludes>
+	                    <exclude>**/WordnetHBaseServiceTest**/**</exclude>
+<!-- 	                    <exclude>**/WordnetCassandraServiceTest**/**</exclude> -->
 	                    </excludes>
                     </configuration>
                   </execution>
@@ -172,9 +172,9 @@
                     <argLine>-Xms128M -Xmx500M -Xloggc:wordnet-gc.log</argLine>                      
                       --> 
                     <!-- debugging -->  
-                       <!--   
+                         <!--
                     <argLine>-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8002,server=y,suspend=y</argLine>                      
-                           -->   
+                            -->      
                     <!-- profiling  -->
                     <!--
                     <argLine>-Xrunhprof:cpu=samples,depth=25</argLine>  

@@ -3,14 +3,7 @@ package org.cloudgraph.examples.wordnet.web.model;
 public enum Action {
 
     
-    //top navigation links
-    topnav_datafilters,
-    topnav_dashboard,
     topnav_welcome,
-    topnav_person,
-    topnav_accomplishment,
-    topnav_announcement,
-    topnav_opportunity,
     topnav_profile,
     topnav_search,
     topnav_contact,
@@ -18,5 +11,7 @@ public enum Action {
     topnav_logon,
     topnav_logoff,
     topnav_register,
+    topnav_docs,
+    topnav_about,
      
 }

@@ -1,0 +1,29 @@
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;"> 
+]>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+<body>
+<ui:composition>
+    
+    <p:tabView id="tabvw" rendered="#{WordBean.hasWord}" dynamic="true" cache="true">
+	<p:tab id="hbase_tb" title="HBase Results"> 
+     <ui:include src="/common/HBasePanel.xhtml" />
+
+    </p:tab>   
+	<p:tab id="cass_tb" title="Cassandra Results">  
+     <ui:include src="/common/CassandraPanel.xhtml" />
+	</p:tab>   
+
+	<p:tab rendered="false" id="rdb_tb" title="MySql Results">  
+     <ui:include src="/common/RdbmsPanel.xhtml" />
+	</p:tab>   
+    </p:tabView> 
+</ui:composition>
+</body>
+</html>

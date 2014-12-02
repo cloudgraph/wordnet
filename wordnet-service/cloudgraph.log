@@ -1,0 +1,13 @@
+01 Dec 2014 06:53:43,065 ERROR [Cassandra Java Driver blocking tasks worker-3] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry
+01 Dec 2014 06:53:43,058 ERROR [Cassandra Java Driver blocking tasks worker-3] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry
+01 Dec 2014 06:53:48,336 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 2000 milliseconds
+01 Dec 2014 18:42:43,927 ERROR [Cassandra Java Driver blocking tasks worker-4] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry
+01 Dec 2014 18:42:47,772 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 2000 milliseconds
+01 Dec 2014 18:42:49,775 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 4000 milliseconds
+01 Dec 2014 18:42:53,776 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 8000 milliseconds
+01 Dec 2014 18:43:01,778 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 16000 milliseconds
+01 Dec 2014 18:43:17,779 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 32000 milliseconds
+01 Dec 2014 18:43:49,780 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 64000 milliseconds
+01 Dec 2014 18:44:53,781 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 128000 milliseconds
+econds
+01 Dec 2014 18:44:53,781 ERROR [Reconnection-1] core.ControlConnection [Control connection] Cannot connect to any host, scheduling retry in 128000 milliseconds

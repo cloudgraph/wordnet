@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.cloudgraph</groupId>
         <artifactId>wordnet</artifactId>
-        <version>0.5.1</version>
+        <version>0.5.2</version>
     </parent>
   <groupId>org.cloudgraph</groupId>
   <artifactId>wordnet-import</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <packaging>jar</packaging>
   <name>wordnet-export</name>
   <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
@@ -29,8 +29,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.1.9</plasma.version>
-          <cloudgraph.version>0.5.9</cloudgraph.version>
+          <plasma.version>1.2.2</plasma.version>
+          <cloudgraph.version>0.6.2</cloudgraph.version>
   </properties>
                
   <repositories>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.cloudgraph</groupId>
             <artifactId>wordnet-model</artifactId>
-            <version>0.5.1</version>
+            <version>0.5.2</version>
 	</dependency>
   </dependencies>
   <build>
@@ -144,7 +144,12 @@
 		          <archive>
 		            <manifest>
 		              <addClasspath>true</addClasspath>
-		              <mainClass>org.cloudgraph.examples.wordnet.imprt.MultiImportDriver</mainClass>
+		              <mainClass>org.cloudgraph.examples.wordnet.imprt.HBaseMultiImportDriver</mainClass>
+		              <!--  
+		              <mainClass>org.cloudgraph.examples.wordnet.imprt.CassandraMultiImportDriver</mainClass>
+		              <mainClass>org.cloudgraph.examples.wordnet.imprt.RDBMultiImportDriver</mainClass>
+		              <mainClass>org.cloudgraph.examples.wordnet.imprt.RDBStandaloneImport</mainClass>
+		              -->
 		            </manifest>
 		          </archive>
 		        </configuration>
@@ -156,11 +161,13 @@
                
               
                Absolute paths cannot be stripped with the plugin directly. Use the below to get close, then a text editor
-               to get to a 'hadoop jar /home/lib/wikicorpus-parse-0.5.1.jar -libjars ${LIBJARS}' compatible classpath which must be comma delimited!! 
+               to get to a 'hadoop jar /home/lib/wikicorpus-parse-0.5.2.jar -libjars ${LIBJARS}' compatible classpath which must be comma delimited!! 
+ 
+                   mvn dependency:build-classpath -DexcludeScope=provided -Dmdep.pathSeparator=":" -Dmdep.prefix= -Dmdep.fileSeparator="/home/lib/" -Dmdep.outputFile=${project.build.directory}/classpath  
                
-               mvn dependency:build-classpath -DexcludeScope=provided -Dmdep.pathSeparator=":" -Dmdep.prefix= -Dmdep.fileSeparator="/home/lib/" -Dmdep.outputFile=${project.build.directory}/classpath 
-                 
-                   
+               Then export / set up the Hadoop LIBJARS variable e.g. as below but using classpath from above.
+               
+                   export LIBJARS=/path/jar1,/path/jar2               
 	              
             -->
             <plugin>

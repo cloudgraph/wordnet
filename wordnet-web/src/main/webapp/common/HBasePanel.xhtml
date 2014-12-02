@@ -1,0 +1,150 @@
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;"> 
+]>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+<body>
+<ui:composition>
+    <p:panel header="HBase" rendered="#{WordBean.hasWord}" style="width:100%;">
+        <p:spacer width="1" height="10"/>
+        <h:panelGrid width="100%" border="0" columns="2" columnClasses="AlignLeft,AlignRight"> 
+        <h:panelGrid width="40%" border="0" columns="3" columnClasses="AlignRight,AlignLeft,AlignLeft" cellpadding="4" cellspacing="4"> 
+            <h:graphicImage width="16" height="16" 
+                    url="/images/hexagon.png"/>      
+            <h:outputText value="#{WordBean.displayWord}" style="word-wrap: no; font-size:28px; font-weight: bold:"/>
+            <p:ajaxStatus style="width:16px;">    
+                <f:facet name="prestart">
+                <h:graphicImage width="16" height="16" 
+                    url="/images/ajax-loader3.gif"/>
+                </f:facet>
+                <f:facet name="error"> <h:outputText value="Error" />
+                </f:facet>
+                <f:facet name="success"> <h:outputText value="" />
+                </f:facet>
+                <f:facet name="default"> <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <h:graphicImage width="16" height="16" 
+                    url="/images/ajax-loader3.gif"/>                
+                </f:facet>
+                <f:facet name="complete"> <h:outputText value="" />
+                </f:facet>      
+            </p:ajaxStatus>
+        </h:panelGrid>
+        <p:commandButton id="hbase_stats_btn" value="Graph Statistics" type="button"/>
+        <p:overlayPanel style="width:300px; font-size:12px;" for="hbase_stats_btn" hideEffect="fade" > 
+           <h:panelGrid rowClasses="FormPanelRow" 
+                        columnClasses="FormLabelColumn,FormControlColumn,FormLabelColumn,FormControlColumn" 
+                        columns="2" width="95%" cellpadding="4" cellspacing="4" border="0">  
+                  <p:outputLabel styleClass="labelBold" 
+                      value="Assembly Time:" 
+                      title="Time in milliseconds taken to assemble the current word graph"/>
+                  <h:outputText  
+                      value="#{WordBean.hbaseWordnet.graphAssemblyTime} Milliseconds"
+                      title="Time in milliseconds taken to assemble the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel styleClass="labelBold" 
+                      value="Node Count:" 
+                      title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graphh"/>
+                  <h:outputText  
+                      value="#{WordBean.hbaseWordnet.graphNodeCount}"
+                      title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel   styleClass="labelBold" 
+                      value="Graph Depth:" 
+                      title="The depth of the current word graph"/>
+                  <h:outputText  
+                      value="#{WordBean.hbaseWordnet.graphDepth}"
+                      title="The depth of the current word graph">
+                  </h:outputText>                
+          </h:panelGrid>
+        
+        </p:overlayPanel> 
+        </h:panelGrid>
+        
+        <p:spacer width="1" height="20"/>
+        
+        
+    <c:forEach var="rel" items="#{WordBean.hbaseRelations}">
+    <br></br>
+    <p:panel>
+        <div style="width:100%;">
+          <h:outputText value="#{rel.senseIndex}.) #{rel.pos} - #{rel.definition};&nbsp;"/>
+          <f:subview rendered="#{rel.sense.synsets.samplesCount &gt; 0}">
+              <h:outputText value="Examples: "/>
+              <c:forEach var="sample" items="#{rel.sense.synsets.samples}">
+                  <h:outputText value="&quot;#{sample.sample}&quot;;&nbsp;"/>
+              </c:forEach>
+          </f:subview>
+        </div>
+        <c:forEach var="semRelSet" items="#{rel.semanticRelationSets}">
+            <div class="AlignLeft">
+                <br></br>
+                <div> 
+                <h:outputText value="#{semRelSet.linkTypeName}" style="font-weight:bold;"/>
+                </div>              
+                <c:forEach var="semRel" items="#{semRelSet.links}">
+                    <div style="width:100%;">
+                    <h:outputText value="#{semRel.pos}:&nbsp;" style="font-style: italic;"/>
+                    <h:outputText value="#{semRel.definition};&nbsp;"/>
+                    <f:subview rendered="#{semRel.synset.samplesCount &gt; 0}">
+                        <h:outputText value="Examples: "/>
+                        <c:forEach var="sample" items="#{semRel.synset.samples}">
+                            <h:outputText value="&quot;#{sample.sample}&quot;;&nbsp;"/>
+                        </c:forEach>
+                    </f:subview>
+                    </div>
+                    <f:subview>
+                    <c:forEach var="sense" items="#{semRel.senses}">
+                        <p:commandLink value="#{sense.words.lemma}"
+                            update=":wlcm_frm">
+                            <f:setPropertyActionListener value="#{sense.words.lemma}"   
+                                                target="#{WordBean.word}" /> 
+                        </p:commandLink>&nbsp;
+                    </c:forEach>
+                    </f:subview>
+                </c:forEach>
+            </div>
+        </c:forEach>
+        <c:forEach var="lexRelSet" items="#{rel.lexicalRelationSets}">
+            <div class="AlignLeft">
+                <br></br>
+                <div>
+                <h:outputText value="#{lexRelSet.linkTypeName}" style="font-weight:bold;"/>
+                </div>
+                <c:forEach var="lexRel" items="#{lexRelSet.links}">
+                    <h:outputText value="#{lexRel.pos}:&nbsp;" style="font-style: italic;"/>
+                    <h:outputText value="#{lexRel.definition};&nbsp;"/>
+                    <f:subview rendered="#{lexRel.synset.samplesCount &gt; 0}">
+                        <h:outputText value="Examples: "/>
+                        <c:forEach var="sample" items="#{lexRel.synset.samples}">
+                            <h:outputText value="&quot;#{sample.sample}&quot;;&nbsp;"/>
+                        </c:forEach>
+                    </f:subview>
+                    <f:subview>
+                    <c:forEach var="sense" items="#{lexRel.senses}">
+                        <p:commandLink value="#{sense.words.lemma}"
+                            update=":wlcm_frm">
+                            <f:setPropertyActionListener value="#{sense.words.lemma}"   
+                                                target="#{WordBean.word}" /> 
+                        </p:commandLink>&nbsp;
+                    </c:forEach>
+                    </f:subview>
+                </c:forEach>
+            </div>
+        </c:forEach>
+        
+    </p:panel>
+    </c:forEach>
+        
+        
+    </p:panel>
+
+</ui:composition>
+</body>
+</html> 

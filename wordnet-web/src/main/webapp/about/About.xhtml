@@ -1,14 +1,15 @@
 <!DOCTYPE html [
     <!ENTITY nbsp "&#160;"> 
 ]>
-<ui:composition template="/templates/main-layout.xhtml"
+<html lang="en"
      xmlns="http://www.w3.org/1999/xhtml"
      xmlns:f="http://java.sun.com/jsf/core"
-     xmlns:h="http://java.sun.com/jsf/html"
      xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
      xmlns:p="http://primefaces.org/ui"
      xmlns:c="http://java.sun.com/jsp/jstl/core">
-<ui:define name="content">
+<body>
+<ui:composition>
     <h:form id="about_frm">
     <style>
         td {
@@ -29,5 +30,6 @@
         <p>WordNet® is a registered trademark of Princeton University. HBase™ is a trademark of Apache Software Foundation. MySql® is a registered trademark of Oracle Corporation. CloudGraph™ is a trademark of TerraMeta Software Inc. </p>
     </p:panel>
     </h:form>
-</ui:define>
 </ui:composition>
+</body>
+</html> 

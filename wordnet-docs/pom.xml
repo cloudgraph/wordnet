@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.cloudgraph</groupId>
         <artifactId>wordnet</artifactId>
-        <version>0.5.1</version>
+        <version>0.5.2</version>
     </parent>
   <groupId>org.cloudgraph</groupId>
   <artifactId>wordnet-docs</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <packaging>jar</packaging>
   <name>wordnet-docs</name>
   <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
@@ -29,8 +29,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.1.9</plasma.version>
-          <cloudgraph.version>0.5.9</cloudgraph.version>
+          <plasma.version>1.2.2</plasma.version>
+          <cloudgraph.version>0.6.2</cloudgraph.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <yworks.uml.path>${basedir}/../doclets/yworks-uml-doclet-3.0_01-jdk1.5</yworks.uml.path>                                             
   </properties>
@@ -96,7 +96,7 @@
                   <configuration>                                            
                     <target>                                                 
                       <property name="compile_classpath" refid="maven.compile.classpath"/>
-                      <property name="release_suffix" value="0.5.1"/>
+                      <property name="release_suffix" value="0.5.2"/>
                       <path id="cp">                                                                                                                                                                                                                             
                          <pathelement path="${compile_classpath}"/>                                                                                                                                                                                                  
                       </path>	                                                                                                                                                                                                                                       

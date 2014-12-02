@@ -8,26 +8,24 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.cloudgraph.hbase.mapreduce.GraphXmlInputFormat;
 import org.cloudgraph.hbase.service.CloudGraphContext;
-import org.plasma.query.model.Query;
+import org.cloudgraph.mapreduce.GraphXmlInputFormat;
 
 /**
  * hadoop jar /home/lib/wordnet-import-0.5.1.jar -libjars ${LIBJARS} /tmp/wordnetxml/wordnet-ref.xml /tmp/wordnetxml/wordnet-synsets.xml /tmp/wordnetxml/wordnet-words.xml /tmp/wordnetxml/wordnet-links.xml   
  */
-public class MultiImportDriver {
-	private static Log log = LogFactory.getLog(MultiImportDriver.class);
+public class HBaseMultiImportDriver {
+	private static Log log = LogFactory.getLog(HBaseMultiImportDriver.class);
 
 	/*
 	 * Prints usage without error message
 	 */
 	private static void printUsage() {
-		System.err.println("Usage: " + MultiImportDriver.class.getSimpleName());
+		System.err.println("Usage: " + HBaseMultiImportDriver.class.getSimpleName());
 	}
 	
 	/*
@@ -73,10 +71,10 @@ public class MultiImportDriver {
 				"org.apache.hadoop.io.serializer.JavaSerialization,org.apache.hadoop.io.serializer.WritableSerialization");
 
 		for (String input : otherArgs) {
-			Job job = new Job(conf, MultiImportDriver.class.getSimpleName());
+			Job job = new Job(conf, HBaseMultiImportDriver.class.getSimpleName());
 			FileInputFormat.setInputPaths(job, input);
-			job.setJarByClass(MultiImportDriver.class);
-			job.setMapperClass(ImportMapper.class);	
+			job.setJarByClass(HBaseMultiImportDriver.class);
+			job.setMapperClass(HBaseImportMapper.class);	
 			job.setInputFormatClass(GraphXmlInputFormat.class);
 			job.getConfiguration().setLong("mapred.max.split.size", 1000000); // 1M rather than default 64M
 			job.setNumReduceTasks(0);

@@ -1,0 +1,38 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://primefaces.org/ui">
+<body>
+<ui:composition>
+           <h:form id="topnav_form">
+           <p:toolbar style="width:100%;">
+             <p:toolbarGroup align="left">  
+               <p:commandButton value="Word Search" 
+                   actionListener="#{NavigationBean.welcomeAction.onAction}"
+                   icon="ui-icon-search"
+                   styleClass="#{NavigationBean.welcomeAction.selected ? 'SelectedTopNavButton' : ''}"
+                   process="@this" 
+                   update=":topnav_form :main_content_pnl"/>
+               <p:separator />
+               <p:commandButton value="Javadocs" 
+                   actionListener="#{NavigationBean.docsAction.onAction}"
+                   icon="ui-icon-document"
+                   styleClass="#{NavigationBean.docsAction.selected ? 'SelectedTopNavButton' : ''}"
+                   process="@this" 
+                   update=":topnav_form :main_content_pnl"/>
+               <p:separator />
+               <p:commandButton value="About" 
+                   actionListener="#{NavigationBean.aboutAction.onAction}"
+                   icon="ui-icon-document"
+                   styleClass="#{NavigationBean.aboutAction.selected ? 'SelectedTopNavButton' : ''}"
+                   process="@this" 
+                   update=":topnav_form :main_content_pnl"/>
+             </p:toolbarGroup>
+           </p:toolbar>
+           </h:form>
+           
+</ui:composition>
+</body>
+</html>   

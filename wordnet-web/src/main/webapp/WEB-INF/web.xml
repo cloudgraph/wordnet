@@ -3,11 +3,11 @@
   <display-name>PrimeFaces</display-name>
     <!-- critical for ajax PF that no forward slash exists -->
     <welcome-file-list>
-        <welcome-file>welcome/Welcome.jsf</welcome-file>
+        <welcome-file>Wordnet.jsf</welcome-file>
     </welcome-file-list>
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/welcome/Welcome.jsf</location>
+        <location>/Wordnet.jsf</location>
     </error-page>    
     <context-param>
         <param-name>primefaces.THEME</param-name>

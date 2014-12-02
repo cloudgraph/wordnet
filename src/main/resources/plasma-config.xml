@@ -17,12 +17,6 @@
                         
         </GlobalProvisioning>            
     
-        <!-- default namespace used for SDO infra itself, such as SDO datatypes -->
-        <DefaultNamespace uri="http://www.magicdraw.com/schemas/Plasma_SDO_Profile.xmi"
-            artifact="http://www.magicdraw.com/schemas/Plasma_SDO_Profile.xmi">
-            <Provisioning packageName="org.plasma.platform.sdo"/>
-  		</DefaultNamespace>
-  		   
         <Namespace uri="http://cloudgraph.org/examples/wordnet"
             artifact="http://wordnet.mdxml">
             <Provisioning packageName="org.cloudgraph.examples.wordnet"/>
@@ -86,27 +80,32 @@
                 <Concurrency 
                     pessimisticLockTimeoutMillis="300000"/>
                 
-                <!-- links HBASE specific DAS provisioning to SDO namespace configs -->                 
+                <!-- links HBASE specific DAS to SDO namespace configs -->                 
                 <NamespaceLink uri="http://cloudgraph.org/examples/wordnet"/>
                
               
             </DataAccessProvider>
         </DataAccessService> 
                
+        <DataAccessService dataStoreType="NOSQL">   
+
+            <DataAccessProvider name="CASSANDRA"
+                className="org.cloudgraph.cassandra.service.CassandraGraphService">
+                <Property name="org.plasma.sdo.access.provider.cassandra.ContactHosts">u16551142.onlinehome-server.com</Property>                    
+                
+                <Concurrency 
+                    pessimisticLockTimeoutMillis="300000"/>
+                
+                <!-- links Cassandra specific DAS to SDO namespace configs -->                 
+                <NamespaceLink uri="http://cloudgraph.org/examples/wordnet"/>
+               
+              
+            </DataAccessProvider>
+        </DataAccessService> 
   	      	
     </SDO>
     
     <Repository> 
-        <!-- Would like to use our own namespace here (say 'http://www.servicelabs.org/plasma/sdo/profile') but MagicDraw
-            unfortunately bakes this namespace e.g. 'http://www.magicdraw.com/schemas/*'  
-            into any and every model that references a profile. You can change
-            the namespace declaration by hand in the XMI but next time the
-            model is changed, MD will change it back !!
-        -->
-        <Artifact name="Plasma_SDO_Profile.mdxml"
-            urn="Plasma_SDO_Profile.mdxml" 
-            namespaceUri="http://www.magicdraw.com/schemas/Plasma_SDO_Profile.xmi"/>
-               
         <Artifact name="wordnet.mdxml"
             urn="wordnet.mdxml" 
             namespaceUri="http://wordnet.mdxml"/>

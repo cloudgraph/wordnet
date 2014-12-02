@@ -8,26 +8,24 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.cloudgraph.hbase.mapreduce.GraphXmlInputFormat;
 import org.cloudgraph.hbase.service.CloudGraphContext;
-import org.plasma.query.model.Query;
+import org.cloudgraph.mapreduce.GraphXmlInputFormat;
 
 /**
- * hadoop jar /home/lib/wordnet-import-0.5.1.jar -libjars ${LIBJARS} /tmp/wordnetxml /usr/root/tmp
+ * hadoop jar /home/lib/wordnet-import-0.5.2.jar -libjars ${LIBJARS} /tmp/wordnetxml/wordnet-ref.xml /tmp/wordnetxml/wordnet-synsets.xml /tmp/wordnetxml/wordnet-words.xml /tmp/wordnetxml/wordnet-links.xml   
  */
-public class ImportDriver {
-	private static Log log = LogFactory.getLog(ImportDriver.class);
+public class RDBMultiImportDriver {
+	private static Log log = LogFactory.getLog(RDBMultiImportDriver.class);
 
 	/*
 	 * Prints usage without error message
 	 */
 	private static void printUsage() {
-		System.err.println("Usage: " + ImportDriver.class.getSimpleName());
+		System.err.println("Usage: " + RDBMultiImportDriver.class.getSimpleName());
 	}
 	
 	/*
@@ -54,47 +52,50 @@ public class ImportDriver {
 		conf.setLong("mapred.task.timeout", milliSeconds);
 		
 		String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-		if (otherArgs.length != 2) {
+		if (otherArgs.length == 0) {
 			printUsage("Wrong number of parameters: " + args.length);
 			System.exit(-1);
 		}
 		try {
-			runJob(conf, otherArgs[0], otherArgs[1]);
+			runJob(conf, otherArgs);
 
 		} catch (IOException ex) {
 			log.error(ex.getMessage(), ex);
 		}
 	}
 
-	public static void runJob(Configuration conf, String input, String output) throws IOException {
+	public static void runJob(Configuration conf, String[] otherArgs) throws IOException {
 
 		conf.set(
 				"io.serializations",
 				"org.apache.hadoop.io.serializer.JavaSerialization,org.apache.hadoop.io.serializer.WritableSerialization");
 
-		Job job = new Job(conf, ImportDriver.class.getSimpleName());
-		FileInputFormat.setInputPaths(job, input);
-		job.setJarByClass(ImportDriver.class);
-		job.setMapperClass(ImportMapper.class);	
-		job.getConfiguration().setLong("mapred.max.split.size", 1000000); // bytes rather than default 64M
-		job.setNumReduceTasks(0);
-		job.setInputFormatClass(GraphXmlInputFormat.class);
-		job.setOutputKeyClass(NullWritable.class);
-		job.setOutputValueClass(Text.class);
-		Path outPath = new Path(output);
-		FileOutputFormat.setOutputPath(job, outPath);
-		FileSystem dfs = FileSystem.get(outPath.toUri(), conf);
-		if (dfs.exists(outPath)) {
-			dfs.delete(outPath, true); // watch it this works
-		}
-
-		try {
-			job.waitForCompletion(true);
-
-		} catch (InterruptedException ex) {
-			log.error(ex.getMessage(), ex);
-		} catch (ClassNotFoundException ex) {
-			log.error(ex.getMessage(), ex);
+		for (String input : otherArgs) {
+			Job job = new Job(conf, RDBMultiImportDriver.class.getSimpleName());
+			FileInputFormat.setInputPaths(job, input);
+			job.setJarByClass(RDBMultiImportDriver.class);
+			job.setMapperClass(RDBImportMapper.class);	
+			job.setInputFormatClass(GraphXmlInputFormat.class);
+			job.getConfiguration().setLong("mapred.max.split.size", 1000000); // 1M rather than default 64M
+			job.setNumReduceTasks(0);
+			job.setOutputKeyClass(NullWritable.class);
+			job.setOutputValueClass(NullWritable.class);
+			job.setOutputFormatClass(org.apache.hadoop.mapreduce.lib.output.NullOutputFormat.class);
+			Path outPath = new Path("/tmp/wordnetout"); // no output but Hadoop demands an output path
+			FileOutputFormat.setOutputPath(job, outPath);
+			FileSystem dfs = FileSystem.get(outPath.toUri(), conf);
+			if (dfs.exists(outPath)) {
+				dfs.delete(outPath, true); // watch it this works
+			}
+	
+			try {
+				job.waitForCompletion(true);
+	
+			} catch (InterruptedException ex) {
+				log.error(ex.getMessage(), ex);
+			} catch (ClassNotFoundException ex) {
+				log.error(ex.getMessage(), ex);
+			}
 		}
 
 	}

@@ -44,6 +44,7 @@ public class WordBean extends ModelBean {
     private String word;
     protected WordnetService hbase;
     protected WordnetService rdbms;
+    protected WordnetService cassandra;
     private ReferenceDataCache cache;
     private static List<WordRelations> EMPTY_RELATION_LIST = new ArrayList<WordRelations>();
     private Map<DataAccessProviderName, Wordnet> relations = new HashMap<DataAccessProviderName, Wordnet>();
@@ -52,6 +53,7 @@ public class WordBean extends ModelBean {
     public WordBean() {
 	  	this.hbase = new WordnetServiceImpl(DataAccessProviderName.HBASE);
 	  	this.rdbms = new WordnetServiceImpl(DataAccessProviderName.JDBC);
+	  	this.cassandra = new WordnetServiceImpl(DataAccessProviderName.CASSANDRA);
 	  	this.cache = this.beanFinder.findReferenceDataCache();
     }
         
@@ -106,6 +108,10 @@ public class WordBean extends ModelBean {
 		return getRelations(this.rdbms);
 	}
 	
+	public List<WordRelations> getCassandraRelations() {
+		return getRelations(this.cassandra);
+	}
+	
 	private List<WordRelations> getRelations(WordnetService service) {
 		
 		Wordnet wordnet = this.relations.get(service.getProvider());
@@ -136,8 +142,11 @@ public class WordBean extends ModelBean {
             				wordnet.getGraphAssemblyTime());
             		break;
             	case JDBC:
-            	case JPA:
             		this.cache.addRdbmsAssemblyTime(wordnet.getGraphNodeCount(), 
+            				wordnet.getGraphAssemblyTime());
+            		break;
+            	case CASSANDRA:
+            		this.cache.addCassandraAssemblyTime(wordnet.getGraphNodeCount(), 
             				wordnet.getGraphAssemblyTime());
             		break;
             	default:
@@ -169,6 +178,16 @@ public class WordBean extends ModelBean {
     
     public boolean getHasRdbmsWordnet() {
 		Wordnet wordnet = this.relations.get(this.rdbms.getProvider());
+    	return wordnet != null;
+    }
+    
+    public Wordnet getCassandraWordnet() {
+		Wordnet wordnet = this.relations.get(this.cassandra.getProvider());
+		return wordnet;
+	}
+    
+    public boolean getHasCassandraWordnet() {
+		Wordnet wordnet = this.relations.get(this.cassandra.getProvider());
     	return wordnet != null;
     }
 

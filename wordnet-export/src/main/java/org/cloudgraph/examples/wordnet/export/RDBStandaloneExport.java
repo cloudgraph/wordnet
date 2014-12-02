@@ -46,15 +46,15 @@ import commonj.sdo.helper.XMLDocument;
  * some working directory and execute the below or similar commands.  
  * 
  * Since Wordnet is so highly connected, it is necessary to import the data in stages. Since Mapreduce jobs run in parallel
- * it is necessary to run 4 import mapreduce jobs, to we export the data into 4 files as below. 
- * There may be other ways to export Wordnet but the below is an example.  
+ * it is necessary to run 4 import mapreduce jobs, so we export the data into 4 files as below. 
+ * There may be other ways to export Wordnet but below are several examples.  
  *   
- * java -jar ./wordnet-export-0.5.1/wordnet-export-0.5.1.jar -file wordnet-ref.xml -exportall_ref
- * java -jar ./wordnet-export-0.5.1/wordnet-export-0.5.1.jar -file wordnet-synsets.xml -export synsets
- * java -jar ./wordnet-export-0.5.1/wordnet-export-0.5.1.jar -file wordnet-words.xml -export words_and_senses
- * java -jar ./wordnet-export-0.5.1/wordnet-export-0.5.1.jar -file wordnet-links.xml -export all_links 
+ * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-ref.xml -size 10000 -export all_refs
+ * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-synsets.xml -size 10000 -export synsets
+ * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-words.xml -size 10000 -export words_and_senses
+ * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-links.xml -size 10000 -export all_links 
  */
-public class ExportDriver {
+public class RDBStandaloneExport {
     protected SDODataAccessClient rdbService;
     private static String ARG_BATCH_SIZE = "-size";
     private static String ARG_BATCH_EXPORT = "-export";
@@ -77,10 +77,10 @@ public class ExportDriver {
     }
     private Export toExport = Export.all;
 	
-    private static Log log = LogFactory.getLog(ExportDriver.class);
+    private static Log log = LogFactory.getLog(RDBStandaloneExport.class);
     private int incr = 1000;
 
-    private ExportDriver(Map<String, String> args) throws IOException {
+    private RDBStandaloneExport(Map<String, String> args) throws IOException {
      	this.rdbService = new SDODataAccessClient(new JDBCPojoDataAccessClient());
     	
     	String value = args.get(ARG_BATCH_SIZE);
@@ -187,7 +187,7 @@ public class ExportDriver {
     		printUsage();
     		return;
     	}
-    	new ExportDriver(map);
+    	new RDBStandaloneExport(map);
     }
     
     private static void printUsage() {
@@ -195,7 +195,7 @@ public class ExportDriver {
     	for (int i = 0; i < Export.values().length; i++)
     	{
     		if (i > 0)
-    			buf.append("|");
+    			buf.append(" | ");
     		buf.append(Export.values()[i]);
     	}
     	

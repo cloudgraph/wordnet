@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfg:PlasmaConfiguration  
+    xmlns:cfg="http://www.plasma.org/config">
+  
+
+    <SDO>
+        <GlobalProvisioning 
+            packageName="org.plasma.platform.sdo">
+            
+           <Interface/>          
+           <Implementation classNameSuffix="Impl"
+               childPackageName="impl"/>  
+           <QueryDSL>
+               <Implementation classNamePrefix="Q"
+                   childPackageName="query"/>  
+           </QueryDSL>
+                        
+        </GlobalProvisioning>            
+    
+ 		 
+        <DataAccessService dataStoreType="RDBMS">  
+            <DataAccessProvider name="JDBC"                
+                className="org.cloudgraph.rdb.service.RDBGraphService">
+
+                   
+                <!-- BoneCP provider -->
+                <!-- 
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionURL">jdbc:mysql://localhost:3306/wordnet?autoReconnect=true</Property>                    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionPassword">YOUR MYSQL PASSWORD</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionUserName">root</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionDriverName">com.mysql.jdbc.Driver</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionProviderName">org.cloudgraph.examples.wordnet.connect.BoneCPConnectionPoolProvider</Property>    
+ 
+                <Property name="idleMaxAge">240</Property>
+                <Property name="idleConnectionTestPeriod">60</Property>
+                <Property name="partitionCount">3</Property>
+                <Property name="acquireIncrement">10</Property>
+                <Property name="maxConnectionsPerPartition">20</Property>
+                <Property name="minConnectionsPerPartition">8</Property>
+                <Property name="statementsCacheSize">50</Property>
+                <Property name="releaseHelperThreads">3</Property> 
+                 -->
+                 
+                <!-- DBCP provider --> 
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionURL">jdbc:mysql://localhost:3306/wordnet?autoReconnect=true</Property>                    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionPassword">phoenix</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionUserName">root</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionDriverName">com.mysql.jdbc.Driver</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionProviderName">org.cloudgraph.examples.wordnet.connect.DBCPConnectionPoolProvider</Property>    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionPoolMinSize">0</Property>                    
+                <Property name="org.plasma.sdo.access.provider.jdbc.ConnectionPoolMaxSize">40</Property>                    
+                <Property name="org.apache.commons.dbcp.validationQuery">SELECT COUNT(*) FROM words</Property>  
+                <Property name="org.apache.commons.dbcp.testOnBorrow">false</Property>  
+                <Property name="org.apache.commons.dbcp.testOnReturn">false</Property>  
+                <Property name="org.apache.commons.dbcp.maxWait">30000</Property>
+                <Property name="org.apache.commons.dbcp.testWhileIdle">false</Property>
+                <Property name="org.apache.commons.dbcp.timeBetweenEvictionRunsMillis">30000</Property>
+                <Property name="org.apache.commons.dbcp.minEvictableIdleTimeMillis">40000</Property>
+
+                <Concurrency 
+                    pessimisticLockTimeoutMillis="300000"/>
+            </DataAccessProvider>
+                  
+        </DataAccessService>
+               
+  	      	
+    </SDO>
+    
+    <Repository> 
+    </Repository>
+    
+  
+</cfg:PlasmaConfiguration>   

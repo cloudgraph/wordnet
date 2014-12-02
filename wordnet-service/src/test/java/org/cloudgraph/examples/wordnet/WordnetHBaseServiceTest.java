@@ -15,45 +15,43 @@ import org.plasma.sdo.xml.DefaultOptions;
 import commonj.sdo.DataGraph;
 import commonj.sdo.helper.XMLDocument;
 
-public class WordnetServiceTest extends CommonTest {
+public class WordnetHBaseServiceTest extends CommonTest {
 	
 	private WordnetService service;
 	
     public void setUp() throws Exception {
     	 this.service = new WordnetServiceImpl();
     }
-/*    
+     
+     
     public void testWord() {
-    	Wordnet wordnet = this.service.getAllRelations("calculable", 19294);
+    	Wordnet wordnet = this.service.getAllRelations("fallow");
+    	assertTrue(wordnet != null);
     	List<WordRelations> relations = wordnet.getRelations();
     	assertTrue(relations != null);
-    	assertTrue(relations.size() == 1);
+    	try {
+			log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-*/    
+     
+     
     public void testSynonyms() throws IOException {
     	//Wordnet wordnet = this.service.getSynonyms("beautiful", 12474);
     	//Wordnet wordnet = this.service.getAllRelations("beautiful", 12474);
-    	Wordnet wordnet = this.service.getAllRelations("city", 25207);
+    	Wordnet wordnet = this.service.getAllRelations("beautiful");
     	List<WordRelations> relations = wordnet.getRelations();
     	assertTrue(relations != null);
     	//assertTrue(relations.size() == 1);
     	//log.info(serializeGraph(wordnet.getWord().getDataGraph()));
-    	log.info(wordnet.getWord().dump());
+    	try {
+			log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-    
-	private String serializeGraph(DataGraph graph) throws IOException {
-		DefaultOptions options = new DefaultOptions(graph.getRootObject()
-				.getType().getURI());
-		options.setRootNamespacePrefix("wordnet");
 
-		XMLDocument doc = PlasmaXMLHelper.INSTANCE.createDocument(
-				graph.getRootObject(),
-				graph.getRootObject().getType().getURI(), null);
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PlasmaXMLHelper.INSTANCE.save(doc, os, options);
-		os.flush();
-		os.close();
-		String xml = new String(os.toByteArray());
-		return xml;
-	}
 }

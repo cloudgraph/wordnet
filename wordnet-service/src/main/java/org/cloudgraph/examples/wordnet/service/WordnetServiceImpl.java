@@ -46,6 +46,10 @@ public class WordnetServiceImpl implements WordnetService {
 		this.service = new SDODataAccessClient(new PojoDataAccessClient(this.provider));
 	}
 	
+	public SDODataAccessClient getService() {
+		return service;
+	}
+
 	@Override
 	public DataAccessProviderName getProvider() {
 		return this.provider;
@@ -321,9 +325,9 @@ public class WordnetServiceImpl implements WordnetService {
 		    .select(query.senses().synsets().lexlinks().synsets1().senses().wildcard())  
 		    .select(query.senses().synsets().lexlinks().synsets1().senses().words().wildcard())  
 		;
-		if (wordid > 0)
-		    query.where(query.lemma().eq(lemma).and(query.wordid().eq(wordid)));
-		else
+		//if (wordid > 0)
+		//    query.where(query.lemma().eq(lemma).and(query.wordid().eq(wordid)));
+		//else
 			query.where(query.lemma().eq(lemma));
 		
 		return query;

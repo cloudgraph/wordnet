@@ -111,6 +111,21 @@ public class ReferenceDataCache
 			}
 		}
 	}
+	Map<Integer, List<Long>> cassandraAssemblyTime = new HashMap<Integer, List<Long>>();
+	public synchronized void addCassandraAssemblyTime(long nodeCount, long milliseconds) {
+		for (int r : ranges) {
+			if (nodeCount < r) {
+				List<Long> values = cassandraAssemblyTime.get(r);
+				if (values == null) {
+					Integer range = new Integer(r);
+					values = new ArrayList<Long>();
+					cassandraAssemblyTime.put(range, values);
+				}
+				values.add(milliseconds);
+				break;
+			}
+		}
+	}
 	public synchronized  CartesianChartModel getHbaseCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
   
@@ -156,6 +171,30 @@ public class ReferenceDataCache
         
         return categoryModel;
     }	
+	
+	public synchronized  CartesianChartModel getCassandraCategoryModel() {  
+    	CartesianChartModel categoryModel = new CartesianChartModel();  
+  
+        ChartSeries cassandra = new ChartSeries();  
+        cassandra.setLabel("Cassandra");  
+		for (int r : ranges) {
+			List<Long> values = cassandraAssemblyTime.get(r);
+			if (values == null)
+				continue;
+			long total = 0;
+			for (Long value : values) {
+				total += value.longValue();
+			}
+			 
+			long average = total / values.size();
+			cassandra.set(String.valueOf(r), average);
+		}  
+  
+  
+        categoryModel.addSeries(cassandra);  
+        
+        return categoryModel;
+    }	
 
 	public synchronized  CartesianChartModel getCombinedCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
@@ -175,6 +214,7 @@ public class ReferenceDataCache
 			hbase.set(String.valueOf(r), average);
 		}  
   
+		 
         ChartSeries mysql = new ChartSeries();  
         mysql.setLabel("MySql");  
 		for (int r : ranges) {
@@ -188,11 +228,27 @@ public class ReferenceDataCache
 			 
 			long average = total / values.size();
 			mysql.set(String.valueOf(r), average);
-		}  
+		} 
+		  
   
+        ChartSeries cassandra = new ChartSeries();  
+        cassandra.setLabel("Cassandra");  
+		for (int r : ranges) {
+			List<Long> values = cassandraAssemblyTime.get(r);
+			if (values == null)
+				continue;
+			long total = 0;
+			for (Long value : values) {
+				total += value.longValue();
+			}
+			 
+			long average = total / values.size();
+			cassandra.set(String.valueOf(r), average);
+		}  		 
   
         categoryModel.addSeries(hbase);  
-        categoryModel.addSeries(mysql);  
+        //categoryModel.addSeries(mysql);  
+        categoryModel.addSeries(cassandra);  
         
         return categoryModel;
     }	

@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.cloudgraph</groupId>
         <artifactId>wordnet</artifactId>
-        <version>0.5.1</version>
+        <version>0.5.2</version>
     </parent>
   <groupId>org.cloudgraph</groupId>
   <artifactId>wordnet-model</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <packaging>jar</packaging>
   <name>wordnet-model</name>
   <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
@@ -29,8 +29,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.1.9</plasma.version>
-          <cloudgraph.version>0.5.9</cloudgraph.version>
+          <plasma.version>1.2.2</plasma.version>
+          <cloudgraph.version>0.6.2</cloudgraph.version>
           <yworks.uml.path>${basedir}/../doclets/yworks-uml-doclet-3.0_01-jdk1.5</yworks.uml.path>
   </properties>
                
@@ -77,26 +77,11 @@
 		<artifactId>commons-logging</artifactId>
 		<version>1.1.1</version>
 	</dependency>
-		<dependency>
-			<groupId>org.terrameta</groupId>
-			<artifactId>plasma-sdo</artifactId>
-			<version>${plasma.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>xerces</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xercesImpl</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.cloudgraph</groupId>
-			<artifactId>cloudgraph-rdb</artifactId>
-			<version>${cloudgraph.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.cloudgraph</groupId>
+            <artifactId>wordnet-common</artifactId>
+            <version>0.5.2</version>
+	    </dependency>
         <!-- cloudgraph dependencies -->
         <dependency>
             <groupId>org.cloudgraph</groupId>
@@ -229,6 +214,11 @@
             	</exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.cloudgraph</groupId>
+            <artifactId>cloudgraph-cassandra</artifactId>
+            <version>${cloudgraph.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc14</artifactId>
@@ -239,6 +229,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.23</version>
         </dependency>
+        <dependency>
+            <groupId>org.cloudgraph</groupId>
+            <artifactId>wordnet-common</artifactId>
+            <version>0.5.2</version>
+	    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -298,28 +293,33 @@
 		<plugin>
 			<groupId>org.terrameta</groupId>
 			<artifactId>plasma-maven-plugin</artifactId>
-			<version>1.1.5</version>
+			<version>1.2.2</version>
 			<dependencies>
 		        <dependency>
 		            <groupId>org.terrameta</groupId>
 		            <artifactId>plasma-maven-plugin</artifactId>
-		            <version>1.1.5</version>
+		            <version>1.2.2</version>
 		        </dependency>
 		        <dependency>
 					<groupId>org.terrameta</groupId>
 					<artifactId>plasma-sdo</artifactId>
-					<version>1.1.5</version>
+					<version>1.2.2</version>
 				</dependency>
                 <dependency>
                     <groupId>org.terrameta</groupId>
                     <artifactId>plasma-sdo-jdbc</artifactId>
-                    <version>1.1.5</version>
+                    <version>1.2.2</version>
                 </dependency>
 		        <dependency>
 		            <groupId>mysql</groupId>
 		            <artifactId>mysql-connector-java</artifactId>
 		            <version>5.1.23</version>
 		        </dependency>
+		        <dependency>
+		            <groupId>org.cloudgraph</groupId>
+		            <artifactId>wordnet-common</artifactId>
+		            <version>0.5.2</version>
+			    </dependency>
 		 		         
 		    </dependencies>
 			<executions>
@@ -331,8 +331,6 @@
                         <dialect>java</dialect>
                         <systemProperties>
                             <property><name>log4j.configuration</name><value>log4j.properties</value></property>
-                            <property><name>fuml.configuration</name><value>fuml-config.xml</value></property> 
-                            <property><name>plasma.configuration</name><value>plasma-config.xml</value></property>
                         </systemProperties>
                         <additionalClasspathElements>
                              <param>${basedir}/../src/main/resources</param>
@@ -351,8 +349,6 @@
                         <dialect>java</dialect>
                         <systemProperties>
                             <property><name>log4j.configuration</name><value>log4j.properties</value></property>
-                            <property><name>fuml.configuration</name><value>fuml-config.xml</value></property> 
-                            <property><name>plasma.configuration</name><value>plasma-config.xml</value></property>
                         </systemProperties>
                         <additionalClasspathElements>
                             <param>${basedir}/../src/main/resources</param>
@@ -364,7 +360,6 @@
                         <goal>dsl</goal>
                     </goals>
                 </execution>
-                 <!--                     
                 <execution>
                      <id>ddl-create-mysql</id>
                      <configuration>
@@ -372,8 +367,6 @@
                          <dialect>mysql</dialect>
                          <systemProperties>
                              <property><name>log4j.configuration</name><value>log4j.properties</value></property>
-                             <property><name>fuml.configuration</name><value>fuml-config.xml</value></property> 
-                             <property><name>plasma.configuration</name><value>plasma-config-buildtime.xml</value></property>
                          </systemProperties>
                          <additionalClasspathElements>
                               <param>${basedir}/../src/main/resources</param>
@@ -383,43 +376,119 @@
                          <outputFile>mysql-create.ddl</outputFile>                            
                      </configuration>
                      <goals>
-                         <goal>ddl</goal>
+                         <goal>rdb</goal>
                      </goals>
-                 </execution>                       
-                   -->  
-                   <!--    
-				<execution>
-					<id>model-reverse</id>
+                </execution>                       
+                <execution>
+                     <id>ddl-create-oracle</id>
+                     <configuration>
+                         <action>create</action>
+                         <dialect>oracle</dialect>
+                         <systemProperties>
+                             <property><name>log4j.configuration</name><value>log4j.properties</value></property>
+                         </systemProperties>
+                         <additionalClasspathElements>
+                              <param>${basedir}/../src/main/resources</param>
+                              <param>${basedir}/src/main/resources</param>
+                         </additionalClasspathElements>
+                         <outputDirectory>${basedir}/target/ddl</outputDirectory>                            
+                         <outputFile>oracle-create.ddl</outputFile>                            
+                     </configuration>
+                     <goals>
+                         <goal>rdb</goal>
+                     </goals>
+                </execution>                       
+                <execution>
+                     <id>ddl-create-cql</id>
+                     <configuration>
+                         <action>create</action>
+                         <systemProperties>
+                             <property><name>log4j.configuration</name><value>log4j.properties</value></property>
+                         </systemProperties>
+                         <additionalClasspathElements>
+                              <param>${basedir}/../src/main/resources</param>
+                              <param>${basedir}/src/main/resources</param>
+                         </additionalClasspathElements>
+                         <outputDirectory>${basedir}/target/ddl</outputDirectory>                            
+                         <outputFile>cql-create.ddl</outputFile>                            
+                     </configuration>
+                     <goals>
+                         <goal>cassandra</goal>
+                     </goals>
+                 </execution> 
+                 <!-- ////////////////////////////////////// -->
+                 <!-- Reverse engineers the Wordnet MySQL DB into UML for MagicDraw  -->
+                 <!-- Requires a working Wordnet MySQL database with Wordnet schema loaded, -->                      
+                 <!-- and connection and connection prvider properties set into the JDBC service -->  
+                 <!-- data access provider. See the plasma configuration file for this execution-->                    
+                 <!-- ////////////////////////////////////// -->
+                 <!--             
+				 <execution>
+					<id>model-reverse-magicdraw</id>
 					<configuration>
-						<action>reverse</action>
 						<dialect>mysql</dialect>
-						<additionalClasspathElements>
-							<param>${basedir}/src/main/resources</param>
-						</additionalClasspathElements>
+						<platform>magicdraw</platform>
+                         <additionalClasspathElements>
+                              <param>${basedir}/../src/main/resources</param>
+                              <param>${basedir}/src/main/resources</param>
+                         </additionalClasspathElements>
                         <systemProperties>
                             <property>
                                 <name>log4j.configuration</name>
                                 <value>log4j.properties</value>
                             </property>
                             <property>
-                                <name>fuml.configuration</name>
-                                <value>fuml-config.xml</value>
+                                <name>plasma.configuration</name>
+                                <value>reverse-plasma-config.xml</value>
+                            </property>
+                        </systemProperties>
+						<outputDirectory>${basedir}/target/models</outputDirectory>
+						<outputFile>wordnet.mdxml</outputFile>
+                        <namespaces>http://cloudgraph.org/examples/wordnet</namespaces>
+                        <schemaNames>wordnet</schemaNames>
+					</configuration>
+					<goals>
+						<goal>uml</goal>
+					</goals>
+				</execution>
+				--> 
+				
+                <!-- ////////////////////////////////////// -->
+                <!-- Reverse engineers the Wordnet MySQL DB into UML for Eclipse Papyrus  -->
+                <!-- Requires a working Wordnet MySQL database with Wordnet schema loaded, -->                      
+                <!-- and connection and connection prvider properties set into the JDBC service -->  
+                <!-- data access provider. See the plasma configuration file for this execution-->                    
+                <!-- ////////////////////////////////////// -->
+                <!-- 
+				<execution>
+					<id>model-reverse-papyrus</id>
+					<configuration>
+						<dialect>mysql</dialect>
+						<platform>papyrus</platform>
+                         <additionalClasspathElements>
+                              <param>${basedir}/../src/main/resources</param>
+                              <param>${basedir}/src/main/resources</param>
+                         </additionalClasspathElements>
+                        <systemProperties>
+                            <property>
+                                <name>log4j.configuration</name>
+                                <value>log4j.properties</value>
                             </property>
                             <property>
                                 <name>plasma.configuration</name>
-                                <value>plasma-config.xml</value>
+                                <value>reverse-plasma-config.xml</value>
                             </property>
                         </systemProperties>
-                        <schemaNames>wordnet</schemaNames>
-                        <namespaces>http://cloudgraph.org/examples/wordnet</namespaces>
 						<outputDirectory>${basedir}/target/models</outputDirectory>
-						<outputFile>wordnet.mdxml</outputFile>
+						<outputFile>wordnet.uml</outputFile>
+                        <namespaces>http://cloudgraph.org/examples/wordnet</namespaces>
+                        <schemaNames>wordnet</schemaNames>
 					</configuration>
 					<goals>
-						<goal>rdb</goal>
+						<goal>uml</goal>
 					</goals>
 				</execution>
-				    --> 
+				  -->        
 			</executions>
 		</plugin>
             <plugin>
@@ -472,25 +541,22 @@
                     -->    
                 </configuration>
             </plugin>
+           <!--   
            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.6.1</version>
                 <configuration>
-                  <!-- set to false if yuou have time -->
                   <skip>false</skip>
-                  <!-- output into WAR dir for mavem-war-plugin -->
                   <reportOutputDirectory>${project.build.directory}/wordnet</reportOutputDirectory>
                   <destDir>apidocs</destDir>                  
                   <testDestDir>${project.build.directory}/wordnet/apidocs</testDestDir>
                   <minmemory>128m</minmemory>
-                  <maxmemory>1g</maxmemory>                  <!-- Doclet -->
+                  <maxmemory>1g</maxmemory>                   
                   <doclet>ydoc.doclets.YStandard</doclet>
                   <docletPath>${yworks.uml.path}/lib/ydoc.jar:${yworks.uml.path}/lib/class2svg.jar:${yworks.uml.path}/resources</docletPath>
                   <additionalparam>-umlautogen</additionalparam>
-                  <!-- General Javadoc settings -->
                   <doctitle>${project.name} ${project.version}</doctitle>
                   <show>private</show>
-                  <!-- Styling -->
                   <stylesheetfile>${basedir}/src/javadoc/api/stylesheet.css</stylesheetfile>
                   <javadocDirectory>${basedir}/src/javadoc/api</javadocDirectory>
                   <docfilessubdirs>true</docfilessubdirs>
@@ -506,6 +572,7 @@
                     </execution>                  
                 </executions>                     
             </plugin>
+             -->   
         </plugins>
     <pluginManagement>
     	<plugins>
@@ -529,6 +596,8 @@
     								<goals>
     									<goal>sdo</goal>
     									<goal>dsl</goal>
+    									<goal>rdb</goal>
+    									<goal>cassandra</goal>
     								</goals>
     							</pluginExecutionFilter>
     							<action>
