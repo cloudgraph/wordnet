@@ -19,7 +19,7 @@
     
         <Namespace uri="http://cloudgraph.org/examples/wordnet"
             artifact="http://wordnet.mdxml">
-            <Provisioning packageName="org.cloudgraph.examples.wordnet"/>
+            <Provisioning packageName="org.cloudgraph.examples.wordnet.model"/>
   		</Namespace>
   		    
  		 

@@ -6,7 +6,7 @@
     </description>
     <property name="web.src.dir" value="./src/main/webapp/"/>
     <property name="web.resource.dir" value="./src/main/resources/"/>
-    <property name="tomcat.deploy.dir" value="C:\apache-tomcat-7.0.42\webapps\wordnet"/>
+    <property name="tomcat.deploy.dir" value="C:\apache-tomcat-7.0.57\webapps\wordnet"/>
 	
    
     <target name="all" depends="copy-web-resources" description="">

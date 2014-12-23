@@ -45,7 +45,16 @@
        </h:panelGrid>
        <p:spacer width="1" height="10"/>
        <p:barChart id="totals_chart" value="#{ReferenceDataCache.combinedCategoryModel}" legendPosition="nw"  
-            title="Milliseconds x Graph Size (nodes)" min="0" max="5000" style="width:600px;height:200px"/>                             
+            title="Milliseconds x Graph Size (nodes)" min="0" max="10000" style="width:700px;height:200px"/>                             
+       <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+        <p:outputLabel for="fetchType" value="Fetch Mode:" />
+        <p:selectOneRadio id="fetchType" value="#{WordBean.fetchType}"
+            title="changes the nature of how data graphs are assembled, from a synchronous/blocking strategy to an asynchronous/parallel strategy using a thread pool"  
+            layout="grid" columns="3">
+            <f:selectItems value="#{WordBean.fetchTypeItems}"/>
+            <p:ajax event="change" update=":main_content_pnl"/>
+        </p:selectOneRadio>
+       </h:panelGrid>
     </p:panel>
 </ui:composition>
 </body>

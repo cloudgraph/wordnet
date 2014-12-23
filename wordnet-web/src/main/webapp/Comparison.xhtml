@@ -50,8 +50,20 @@
        </p:ajaxStatus>
        </h:panelGrid>
        <p:spacer width="1" height="10"/>
-       <p:barChart id="totals_chart" value="#{ReferenceDataCache.combinedCategoryModel}" legendPosition="ne"  
-            title="Milliseconds x Graph Size (nodes)" min="0" max="5000" style="width:600px;height:200px"/>                             
+       <p:barChart id="totals_chart" value="#{ReferenceDataCache.combinedCategoryModel}" legendPosition="nw"  
+            title="Milliseconds x Graph Size (nodes)" min="0" max="10000" style="width:600px;height:200px"/>                             
+       <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+        <p:outputLabel for="fetchType" value="Fetch Mode:" />
+        <p:selectOneRadio id="fetchType" value="#{WordBean.fetchType}"
+            title="changes the nature of how data graphs are assembled, from a synchronous/blocking strategy to an asynchronous/parallel strategy using a thread pool"  
+            layout="grid" columns="3"
+            valueChangeListener="#{WordBean.handleFetchTypeChange}">
+            <f:selectItems value="#{WordBean.fetchTypeItems}"/>
+            <p:ajax event="change" update=":wlcm_frm:totals_chart"/>
+        </p:selectOneRadio>
+       </h:panelGrid>
+ 
+ 
     </p:panel>
     <p:spacer width="1" height="10"/>
     
@@ -64,9 +76,6 @@
      <ui:include src="/common/CassandraPanel.xhtml" />
 	</p:tab>   
 
-	<p:tab rendered="false" id="rdb_tb" title="MySql Results">  
-     <ui:include src="/common/RdbmsPanel.xhtml" />
-	</p:tab>   
     </p:tabView> 
      
     </h:form>        

@@ -10,19 +10,20 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cloudgraph.examples.wordnet.Lexlinks;
-import org.cloudgraph.examples.wordnet.Semlinks;
-import org.cloudgraph.examples.wordnet.Senses;
-import org.cloudgraph.examples.wordnet.Synsets;
-import org.cloudgraph.examples.wordnet.Words;
-import org.cloudgraph.examples.wordnet.query.QLexlinks;
-import org.cloudgraph.examples.wordnet.query.QSemlinks;
-import org.cloudgraph.examples.wordnet.query.QSenses;
-import org.cloudgraph.examples.wordnet.query.QWords;
+import org.cloudgraph.config.ConfigurationProperty;
+import org.cloudgraph.config.QueryFetchType;
+import org.cloudgraph.examples.wordnet.model.Lexlinks;
+import org.cloudgraph.examples.wordnet.model.Semlinks;
+import org.cloudgraph.examples.wordnet.model.Senses;
+import org.cloudgraph.examples.wordnet.model.Synsets;
+import org.cloudgraph.examples.wordnet.model.Words;
+import org.cloudgraph.examples.wordnet.model.query.QLexlinks;
+import org.cloudgraph.examples.wordnet.model.query.QSemlinks;
+import org.cloudgraph.examples.wordnet.model.query.QSenses;
+import org.cloudgraph.examples.wordnet.model.query.QWords;
 import org.plasma.config.DataAccessProviderName;
 import org.plasma.query.Expression;
 import org.plasma.query.Query;
-import org.plasma.sdo.access.client.HBasePojoDataAccessClient;
 import org.plasma.sdo.access.client.PojoDataAccessClient;
 import org.plasma.sdo.access.client.SDODataAccessClient;
 import org.plasma.sdo.helper.PlasmaXMLHelper;
@@ -59,11 +60,24 @@ public class WordnetServiceImpl implements WordnetService {
 	public Wordnet getAllRelations(String lemma) {
 		return getAllRelations(lemma, 0);
 	}
-		
+	
 	@Override
-	public Wordnet getAllRelations(String lemma, long wordid) {		
+	public Wordnet getAllRelations(String lemma, QueryFetchType fetchType) {
+		return getAllRelations(lemma, 0, fetchType);
+	}
+	
+	@Override
+	public Wordnet getAllRelations(String lemma, long wordid) {	
+		return getAllRelations(lemma, 0, null);
+	}	
+	 
+	private Wordnet getAllRelations(String lemma, long wordid, QueryFetchType fetchType) {		
 		List<WordRelations> relations = new ArrayList<WordRelations>();		
-		Query query = createRelationQuery(lemma, wordid);
+		Query query = createRelationQuery(lemma, wordid);		
+		if (fetchType != null)
+			query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___FETCHTYPE.value(), 
+					fetchType.value());
+		
 		DataGraph[] graphs = this.service.find(query);
 		Words word = this.getWord(graphs, lemma, wordid);
 		if (word == null)

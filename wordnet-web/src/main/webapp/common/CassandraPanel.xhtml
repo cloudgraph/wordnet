@@ -13,7 +13,7 @@
     <p:panel header="Cassandra" rendered="#{WordBean.hasWord}" style="width:100%;">
         <p:spacer width="1" height="10"/>
         <h:panelGrid width="100%" border="0" columns="2" columnClasses="AlignLeft,AlignRight"> 
-        <h:panelGrid width="40%" border="0" columns="3" columnClasses="AlignRight,AlignLeft,AlignLeft" cellpadding="4" cellspacing="4"> 
+        <h:panelGrid width="50%" border="0" columns="3" columnClasses="AlignRight,AlignLeft,AlignLeft" cellpadding="4" cellspacing="4"> 
             <h:graphicImage width="16" height="16" 
                     url="/images/hexagon.png"/>      
             <h:outputText value="#{WordBean.displayWord}" style="word-wrap: no; font-size:28px; font-weight: bold:"/>
@@ -35,38 +35,51 @@
                 <f:facet name="complete"> <h:outputText value="" />
                 </f:facet>      
             </p:ajaxStatus>
-        </h:panelGrid>
-        <p:commandButton id="cass_stats_btn" value="Graph Statistics" type="button"/>
-        <p:overlayPanel style="width:300px; font-size:12px;" for="cass_stats_btn" hideEffect="fade" > 
+        </h:panelGrid>    
+        <p:fieldset legend="Graph Statistics" style="width:600px;float:right;" styleClass="AlignLeft">  
            <h:panelGrid rowClasses="FormPanelRow" 
                         columnClasses="FormLabelColumn,FormControlColumn,FormLabelColumn,FormControlColumn" 
-                        columns="2" width="95%" cellpadding="4" cellspacing="4" border="0">  
-                  <p:outputLabel styleClass="labelBold" 
-                      value="Assembly Time:" 
+                        columns="4" width="95%" cellpadding="4" cellspacing="4" border="0">  
+                  <p:outputLabel styleClass="StatLabel" 
+                      value="Assembly Time (Millis):" 
                       title="Time in milliseconds taken to assemble the current word graph"/>
-                  <h:outputText  
-                      value="#{WordBean.cassandraWordnet.graphAssemblyTime} Milliseconds"
+                  <h:outputText styleClass="StatText" 
+                      value="#{WordBean.cassandraWordnet.graphAssemblyTime}"
                       title="Time in milliseconds taken to assemble the current word graph">
                   </h:outputText>                
-                  <p:outputLabel styleClass="labelBold" 
-                      value="Node Count:" 
+                  <p:outputLabel styleClass="StatLabel" 
+                      value="Thread Count:" 
+                      title="The number of unique threads used to assemble the current word graph"/>
+                  <h:outputText styleClass="StatText" 
+                      value="#{WordBean.cassandraWordnet.graphThreadCount}"
+                      title="The number of unique threads used to assemble the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel styleClass="StatLabel" 
+                      value="Round Trip Time (Millis):" 
+                      title="The average time in milliseconds taken for a data store round trip. Note: the high level of recursion and connectivity within the wordnet data requires each entity be modeled as a separate row. Each assembly of a graph node within this model therefore represents a data store round trip"/>
+                  <h:outputText styleClass="StatText"  
+                      value="#{WordBean.hbaseWordnet.graphNodeAssemblyTime}"
+                      title="The average time in milliseconds taken for a data store round trip. Note: the high level of recursion and connectivity within the wordnet data requires each entity be modeled as a separate row. Each assembly of a graph node within this model therefore represents a data store round trip">
+                      <f:convertNumber minFractionDigits="1" maxFractionDigits="1"/>
+                  </h:outputText>                
+                  <p:outputLabel styleClass="StatLabel" 
+                      value="Graph Node Count:" 
                       title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graphh"/>
-                  <h:outputText  
+                  <h:outputText styleClass="StatText" 
                       value="#{WordBean.cassandraWordnet.graphNodeCount}"
                       title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graph">
                   </h:outputText>                
-                  <p:outputLabel   styleClass="labelBold" 
+                  <p:outputLabel styleClass="StatLabel" 
                       value="Graph Depth:" 
                       title="The depth of the current word graph"/>
-                  <h:outputText  
+                  <h:outputText styleClass="StatText"  
                       value="#{WordBean.cassandraWordnet.graphDepth}"
                       title="The depth of the current word graph">
                   </h:outputText>                
           </h:panelGrid>
         
-        </p:overlayPanel> 
+        </p:fieldset> 
         </h:panelGrid>
-        
         <p:spacer width="1" height="20"/>
         
         

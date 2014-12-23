@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudgraph.examples.wordnet.Senses;
-import org.cloudgraph.examples.wordnet.Synsets;
+import org.cloudgraph.examples.wordnet.model.Senses;
+import org.cloudgraph.examples.wordnet.model.Synsets;
 
 public class WordRelations {
     private Senses sense;

@@ -1,2 +1,0 @@
-java -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8002,server=y,suspend=y -Dfuml.configuration=fuml-config.xml -Dunique.checks=false -Dlog4j.configuration=file:lo
-g4j.properties -jar wordnet-export-0.5.1.jar -size 1 -load senses -commit true

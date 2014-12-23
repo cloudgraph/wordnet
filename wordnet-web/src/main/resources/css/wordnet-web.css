@@ -242,5 +242,14 @@ BODY
     white-space:normal !important;
 }
 
- 
+.StatLabel {
+    font-weight:bold;
+    font-size:85%;
+    color:gray;
+}
+
+.StatText {
+    font-size:85%;
+    color:gray;
+} 
 

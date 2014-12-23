@@ -1,6 +1,6 @@
 package org.cloudgraph.examples.wordnet.web.model.cache;
 
-import org.cloudgraph.examples.wordnet.Words;
+import org.cloudgraph.examples.wordnet.model.Words;
 
 public class WordAdapter {
     private Words word;

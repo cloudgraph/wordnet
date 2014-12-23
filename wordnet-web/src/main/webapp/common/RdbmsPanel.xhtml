@@ -49,6 +49,13 @@
                       title="Time in milliseconds taken to assemble the current word graph">
                   </h:outputText>                
                   <p:outputLabel styleClass="labelBold" 
+                      value="Thread Count:" 
+                      title="The number of unique threads used to assemble the current word graph"/>
+                  <h:outputText  
+                      value="#{WordBean.rdbmsWordnet.graphThreadCount}"
+                      title="The number of unique threads used to assemble the current word graph">
+                  </h:outputText>                
+                  <p:outputLabel styleClass="labelBold" 
                       value="Node Count:" 
                       title="The total number of nodes (e.g. Words, Senses, SynSets, Semlinks, etc...) making up the current word graphh"/>
                   <h:outputText  

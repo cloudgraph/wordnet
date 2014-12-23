@@ -25,8 +25,7 @@
     <modules>
        <module>wordnet-common</module>
        <module>wordnet-model</module>
-       <module>wordnet-export</module>
-       <module>wordnet-import</module>
+       <module>wordnet-repo</module>
        <module>wordnet-service</module>
        <module>wordnet-web</module>
     </modules>

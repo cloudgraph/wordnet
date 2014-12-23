@@ -1,31 +1,16 @@
 package org.cloudgraph.examples.wordnet;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.cloudgraph.cassandra.service.CassandraGraphService;
+import org.cloudgraph.common.CloudGraphConstants;
 import org.cloudgraph.common.CommonTest;
-import org.cloudgraph.examples.wordnet.query.QLinktypes;
-import org.cloudgraph.examples.wordnet.query.QSynsets;
+import org.cloudgraph.config.QueryFetchType;
 import org.cloudgraph.examples.wordnet.service.WordRelations;
 import org.cloudgraph.examples.wordnet.service.Wordnet;
-import org.cloudgraph.examples.wordnet.service.WordnetService;
 import org.cloudgraph.examples.wordnet.service.WordnetServiceImpl;
 import org.plasma.config.DataAccessProviderName;
-import org.plasma.sdo.PlasmaDataGraph;
-import org.plasma.sdo.access.client.PojoDataAccessClient;
-import org.plasma.sdo.access.client.SDODataAccessClient;
-import org.plasma.sdo.helper.PlasmaDataFactory;
-import org.plasma.sdo.helper.PlasmaDataHelper;
-import org.plasma.sdo.helper.PlasmaTypeHelper;
-import org.plasma.sdo.helper.PlasmaXMLHelper;
-import org.plasma.sdo.xml.DefaultOptions;
-
-import commonj.sdo.DataGraph;
-import commonj.sdo.DataObject;
-import commonj.sdo.Type;
-import commonj.sdo.helper.XMLDocument;
+import org.plasma.sdo.core.CoreNode;
 
 public class WordnetCassandraServiceTest extends CommonTest {
 	
@@ -124,7 +109,7 @@ public class WordnetCassandraServiceTest extends CommonTest {
 			e.printStackTrace();
 		}
     }    
-*/      
+      
     public void testSynonyms() throws IOException {
     	//Wordnet wordnet = this.service.getSynonyms("beautiful", 12474);
     	//Wordnet wordnet = this.service.getAllRelations("beautiful", 12474);
@@ -139,6 +124,34 @@ public class WordnetCassandraServiceTest extends CommonTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	CoreNode rootNode = (CoreNode)wordnet.getWord();
+    	Long threadCount = (Long)rootNode.getValueObject().get(
+        		CloudGraphConstants.GRAPH_THREAD_COUNT);
+    	log.info("assembly thread count: " + threadCount);
+   }
+ */
+    public void testSynonymsConcurrent() throws IOException {
+    	//Wordnet wordnet = this.service.getSynonyms("beautiful", 12474);
+    	//Wordnet wordnet = this.service.getAllRelations("beautiful", 12474);
+    	Wordnet wordnet = this.service.getAllRelations("faithful", 
+    			QueryFetchType.PARALLEL);
+    	List<WordRelations> relations = wordnet.getRelations();
+    	assertTrue(relations != null);
+    	//assertTrue(relations.size() == 1);
+    	//log.info(serializeGraph(wordnet.getWord().getDataGraph()));
+    	try {
+			//log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	CoreNode rootNode = (CoreNode)wordnet.getWord();
+    	Long assemTime = (Long)rootNode.getValueObject().get(
+        		CloudGraphConstants.GRAPH_ASSEMBLY_TIME);
+    	Long threadCount = (Long)rootNode.getValueObject().get(
+        		CloudGraphConstants.GRAPH_THREAD_COUNT);
+    	Long nodeCount = (Long)rootNode.getValueObject().get(
+        		CloudGraphConstants.GRAPH_NODE_COUNT);
+    	log.info("threads: " + threadCount + ", nodes: " + nodeCount + ", time: " + assemTime);
     }
- 
 }

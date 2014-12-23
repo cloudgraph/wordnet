@@ -18,9 +18,10 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cloudgraph.examples.wordnet.Senses;
-import org.cloudgraph.examples.wordnet.Words;
-import org.cloudgraph.examples.wordnet.query.QWords;
+import org.cloudgraph.config.QueryFetchType;
+import org.cloudgraph.examples.wordnet.model.Senses;
+import org.cloudgraph.examples.wordnet.model.Words;
+import org.cloudgraph.examples.wordnet.model.query.QWords;
 import org.plasma.sdo.access.client.HBasePojoDataAccessClient;
 import org.plasma.sdo.access.client.SDODataAccessClient;
 import org.primefaces.model.chart.CartesianChartModel;
@@ -43,7 +44,7 @@ public class ReferenceDataCache
 	private static final long serialVersionUID = 1L;
     protected SDODataAccessClient service;
 	private Map<String, Words> wordMap = new WeakHashMap<String, Words>();
-	private static int[] ranges = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 5000};
+	private static int[] ranges = {500, 1000, 1500, 2000, 2500, 3000, 3500, 4000};
   
 
     /**
@@ -81,58 +82,74 @@ public class ReferenceDataCache
 	}
 	
 	Map<Integer, List<Long>> hbaseAssemblyTime = new HashMap<Integer, List<Long>>();
-	public synchronized void addHBaseAssemblyTime(long nodeCount, long milliseconds) {
-		for (int r : ranges) {
-			if (nodeCount < r) {
-				List<Long> values = hbaseAssemblyTime.get(r);
-				if (values == null) {
-					Integer range = new Integer(r);
-					values = new ArrayList<Long>();
-					hbaseAssemblyTime.put(range, values);
-				}
-				values.add(milliseconds);
-				break;
-			}
+	Map<Integer, List<Long>> hbaseParallelAssemblyTime = new HashMap<Integer, List<Long>>();
+	public synchronized void addHBaseAssemblyTime(long nodeCount, long milliseconds, 
+			QueryFetchType fetchType) {
+		switch (fetchType) {
+		case PARALLEL:
+			map(nodeCount, milliseconds, hbaseParallelAssemblyTime);
+			break;
+		default:
+			map(nodeCount, milliseconds, hbaseAssemblyTime);
 		}
 	}
 	
 	Map<Integer, List<Long>> rdbmsAssemblyTime = new HashMap<Integer, List<Long>>();
-	public synchronized void addRdbmsAssemblyTime(long nodeCount, long milliseconds) {
-		for (int r : ranges) {
-			if (nodeCount < r) {
-				List<Long> values = rdbmsAssemblyTime.get(r);
-				if (values == null) {
-					Integer range = new Integer(r);
-					values = new ArrayList<Long>();
-					rdbmsAssemblyTime.put(range, values);
-				}
-				values.add(milliseconds);
-				break;
-			}
+	Map<Integer, List<Long>> rdbmsParallelAssemblyTime = new HashMap<Integer, List<Long>>();
+	public synchronized void addRdbmsAssemblyTime(long nodeCount, long milliseconds,
+			QueryFetchType fetchType) {
+		switch (fetchType) {
+		case PARALLEL:
+			map(nodeCount, milliseconds, rdbmsParallelAssemblyTime);
+			break;
+		default:
+			map(nodeCount, milliseconds, rdbmsAssemblyTime);
 		}
 	}
 	Map<Integer, List<Long>> cassandraAssemblyTime = new HashMap<Integer, List<Long>>();
-	public synchronized void addCassandraAssemblyTime(long nodeCount, long milliseconds) {
+	Map<Integer, List<Long>> cassandraParallelAssemblyTime = new HashMap<Integer, List<Long>>();
+	public synchronized void addCassandraAssemblyTime(long nodeCount, long milliseconds,
+			QueryFetchType fetchType) {
+		switch (fetchType) {
+		case PARALLEL:
+			map(nodeCount, milliseconds, cassandraParallelAssemblyTime);
+			break;
+		default:
+			map(nodeCount, milliseconds, cassandraAssemblyTime);
+		}
+	}
+	
+	private void map(long nodeCount, long milliseconds, Map<Integer, List<Long>> map) {
 		for (int r : ranges) {
 			if (nodeCount < r) {
-				List<Long> values = cassandraAssemblyTime.get(r);
+				List<Long> values = map.get(r);
 				if (values == null) {
 					Integer range = new Integer(r);
 					values = new ArrayList<Long>();
-					cassandraAssemblyTime.put(range, values);
+					map.put(range, values);
 				}
 				values.add(milliseconds);
 				break;
 			}
-		}
+		}		
 	}
+	
 	public synchronized  CartesianChartModel getHbaseCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
   
-        ChartSeries hbase = new ChartSeries();  
-        hbase.setLabel("HBase");  
+        ChartSeries hbase = createSeries("HBase", this.hbaseAssemblyTime);  
+        categoryModel.addSeries(hbase);  
+        ChartSeries hbaseParallel = createSeries("HBase (parallel)", this.hbaseParallelAssemblyTime);  
+        categoryModel.addSeries(hbaseParallel);  
+        
+        return categoryModel;
+    }
+	
+	private ChartSeries createSeries(String name, Map<Integer, List<Long>> map) {
+		ChartSeries series = new ChartSeries();
+		series.setLabel(name);  
 		for (int r : ranges) {
-			List<Long> values = hbaseAssemblyTime.get(r);
+			List<Long> values = map.get(r);
 			if (values == null)
 				continue;
 			long total = 0;
@@ -141,33 +158,18 @@ public class ReferenceDataCache
 			}
 			 
 			long average = total / values.size();
-			hbase.set(String.valueOf(r), average);
-		}  
-        categoryModel.addSeries(hbase);  
-        
-        return categoryModel;
-    }	
+			series.set(String.valueOf(r), average);
+		} 
+		return series;
+	}
 	
 	public synchronized  CartesianChartModel getRdbmsCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
-  
-        ChartSeries mysql = new ChartSeries();  
-        mysql.setLabel("MySql");  
-		for (int r : ranges) {
-			List<Long> values = rdbmsAssemblyTime.get(r);
-			if (values == null)
-				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
-			mysql.set(String.valueOf(r), average);
-		}  
-  
-  
-        categoryModel.addSeries(mysql);  
+
+        ChartSeries rdbms = createSeries("MySql", this.rdbmsAssemblyTime);  
+        categoryModel.addSeries(rdbms);  
+        ChartSeries rdbmsParallel = createSeries("MySql (parallel)", this.rdbmsParallelAssemblyTime);  
+        categoryModel.addSeries(rdbmsParallel);  
         
         return categoryModel;
     }	
@@ -175,23 +177,10 @@ public class ReferenceDataCache
 	public synchronized  CartesianChartModel getCassandraCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
   
-        ChartSeries cassandra = new ChartSeries();  
-        cassandra.setLabel("Cassandra");  
-		for (int r : ranges) {
-			List<Long> values = cassandraAssemblyTime.get(r);
-			if (values == null)
-				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
-			cassandra.set(String.valueOf(r), average);
-		}  
-  
-  
+        ChartSeries cassandra = createSeries("Cassandra", this.cassandraAssemblyTime);  
         categoryModel.addSeries(cassandra);  
+        ChartSeries cassandraParallel = createSeries("Cassandra (parallel)", this.cassandraParallelAssemblyTime);  
+        categoryModel.addSeries(cassandraParallel);  
         
         return categoryModel;
     }	
@@ -199,56 +188,16 @@ public class ReferenceDataCache
 	public synchronized  CartesianChartModel getCombinedCategoryModel() {  
     	CartesianChartModel categoryModel = new CartesianChartModel();  
   
-        ChartSeries hbase = new ChartSeries();  
-        hbase.setLabel("HBase");  
-		for (int r : ranges) {
-			List<Long> values = hbaseAssemblyTime.get(r);
-			if (values == null)
-				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
-			hbase.set(String.valueOf(r), average);
-		}  
-  
-		 
-        ChartSeries mysql = new ChartSeries();  
-        mysql.setLabel("MySql");  
-		for (int r : ranges) {
-			List<Long> values = rdbmsAssemblyTime.get(r);
-			if (values == null)
-				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
-			mysql.set(String.valueOf(r), average);
-		} 
-		  
-  
-        ChartSeries cassandra = new ChartSeries();  
-        cassandra.setLabel("Cassandra");  
-		for (int r : ranges) {
-			List<Long> values = cassandraAssemblyTime.get(r);
-			if (values == null)
-				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
-			cassandra.set(String.valueOf(r), average);
-		}  		 
-  
-        categoryModel.addSeries(hbase);  
-        //categoryModel.addSeries(mysql);  
+        ChartSeries cassandra = createSeries("Cassandra", this.cassandraAssemblyTime);  
         categoryModel.addSeries(cassandra);  
+        ChartSeries cassandraParallel = createSeries("Cassandra (parallel)", this.cassandraParallelAssemblyTime);  
+        categoryModel.addSeries(cassandraParallel);  
+
+        ChartSeries hbase = createSeries("HBase", this.hbaseAssemblyTime);  
+        categoryModel.addSeries(hbase);  
+        ChartSeries hbaseParallel = createSeries("HBase (parallel)", this.hbaseParallelAssemblyTime);  
+        categoryModel.addSeries(hbaseParallel);  
+  
         
         return categoryModel;
     }	

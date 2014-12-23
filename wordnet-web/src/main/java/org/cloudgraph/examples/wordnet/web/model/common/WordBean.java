@@ -11,27 +11,24 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cloudgraph.examples.wordnet.Senses;
-import org.cloudgraph.examples.wordnet.Words;
-import org.cloudgraph.examples.wordnet.query.QWords;
+import org.cloudgraph.config.QueryFetchType;
+import org.cloudgraph.examples.wordnet.model.Words;
 import org.cloudgraph.examples.wordnet.service.WordRelations;
 import org.cloudgraph.examples.wordnet.service.Wordnet;
 import org.cloudgraph.examples.wordnet.service.WordnetService;
 import org.cloudgraph.examples.wordnet.service.WordnetServiceImpl;
 import org.cloudgraph.examples.wordnet.web.model.ModelBean;
 import org.cloudgraph.examples.wordnet.web.model.cache.ReferenceDataCache;
-import org.cloudgraph.examples.wordnet.web.model.cache.WordAdapter;
 import org.plasma.config.DataAccessProviderName;
-import org.plasma.sdo.access.client.HBasePojoDataAccessClient;
-import org.plasma.sdo.access.client.SDODataAccessClient;
 import org.plasma.sdo.helper.PlasmaXMLHelper;
 import org.plasma.sdo.xml.DefaultOptions;
-import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.TabChangeEvent;
 
 import commonj.sdo.DataGraph;
 import commonj.sdo.helper.XMLDocument;
@@ -49,8 +46,9 @@ public class WordBean extends ModelBean {
     private static List<WordRelations> EMPTY_RELATION_LIST = new ArrayList<WordRelations>();
     private Map<DataAccessProviderName, Wordnet> relations = new HashMap<DataAccessProviderName, Wordnet>();
     private int tabIndex;
+    private String fetchType = QueryFetchType.SERIAL.name();
     
-    public WordBean() {
+	public WordBean() {
 	  	this.hbase = new WordnetServiceImpl(DataAccessProviderName.HBASE);
 	  	this.rdbms = new WordnetServiceImpl(DataAccessProviderName.JDBC);
 	  	this.cassandra = new WordnetServiceImpl(DataAccessProviderName.CASSANDRA);
@@ -100,16 +98,71 @@ public class WordBean extends ModelBean {
         }       		
 	}
 	
+    public String getFetchType() {
+		return fetchType;
+	}
+
+	public void setFetchType(String type) {
+		if (type != null && !type.equals(this.fetchType)) { 
+		    this.fetchType = type;
+		    this.relations.clear();
+		}
+	}
+	
+	public void handleFetchTypeChange(AjaxBehaviorEvent event) {
+		this.relations.clear();
+	}
+	
+	/*
+	public void handleFetchTypeChange(ActionEvent event) {
+		this.word = null;
+		this.relations.clear();
+	}
+	public void handleFetchTypeChange() {
+		this.word = null;
+		this.relations.clear();
+	}
+	*/
+	private List<SelectItem> fetchTypeItems;
+	public List<SelectItem> getFetchTypeItems() {
+		if (fetchTypeItems == null) {
+			fetchTypeItems = new ArrayList<SelectItem>();
+			fetchTypeItems.add(new SelectItem(QueryFetchType.SERIAL.name(), 
+					"synchronous"));
+			fetchTypeItems.add(new SelectItem(QueryFetchType.PARALLEL.name(), 
+					"parallel"));
+		}
+		return fetchTypeItems;
+	}
+	
 	public List<WordRelations> getHbaseRelations() {
-		return getRelations(this.hbase);
+		try {
+		    return getRelations(this.hbase);
+		}
+		catch (Throwable t) {
+			log.error(t.getMessage(), t);
+			return EMPTY_RELATION_LIST;
+		}
 	}
 	
 	public List<WordRelations> getRdbmsRelations() {
-		return getRelations(this.rdbms);
+		try {
+		    return getRelations(this.rdbms);
+		}
+		catch (Throwable t) {
+			log.error(t.getMessage(), t);
+			return EMPTY_RELATION_LIST;
+		}
 	}
 	
 	public List<WordRelations> getCassandraRelations() {
-		return getRelations(this.cassandra);
+		try {
+		    return getRelations(this.cassandra);
+		}
+		catch (Throwable t) {
+			log.error(t.getMessage(), t);
+			return EMPTY_RELATION_LIST;
+		}
 	}
 	
 	private List<WordRelations> getRelations(WordnetService service) {
@@ -124,10 +177,12 @@ public class WordBean extends ModelBean {
 		try  {
             Words wd = this.cache.getWord(this.word);
             if (wd != null) {            	
-            	wordnet = service.getAllRelations(wd.getLemma(), wd.getWordid());
+            	wordnet = service.getAllRelations(wd.getLemma(), 
+            			QueryFetchType.valueOf(this.fetchType));
             }
             else {
-            	wordnet = service.getAllRelations(this.word);
+            	wordnet = service.getAllRelations(this.word,
+            			QueryFetchType.valueOf(this.fetchType));
             }
             if (wordnet == null) {
     	        FacesMessage msg = new FacesMessage("No results found for '" + this.word + "'");  	       
@@ -139,15 +194,18 @@ public class WordBean extends ModelBean {
             	switch (service.getProvider()) {
             	case HBASE:
             		this.cache.addHBaseAssemblyTime(wordnet.getGraphNodeCount(), 
-            				wordnet.getGraphAssemblyTime());
+            				wordnet.getGraphAssemblyTime(),
+            				QueryFetchType.valueOf(this.fetchType));
             		break;
             	case JDBC:
             		this.cache.addRdbmsAssemblyTime(wordnet.getGraphNodeCount(), 
-            				wordnet.getGraphAssemblyTime());
+            				wordnet.getGraphAssemblyTime(),
+            				QueryFetchType.valueOf(this.fetchType));
             		break;
             	case CASSANDRA:
             		this.cache.addCassandraAssemblyTime(wordnet.getGraphNodeCount(), 
-            				wordnet.getGraphAssemblyTime());
+            				wordnet.getGraphAssemblyTime(),
+            				QueryFetchType.valueOf(this.fetchType));
             		break;
             	default:
             	}

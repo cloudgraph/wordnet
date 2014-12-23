@@ -21,11 +21,9 @@
         <f:loadBundle basename="#{UserBean.bundleName}" var="bundle"/>
     </h:head>
     <h:body>   
-      <div class="MainDiv">
-           <h:panelGrid width="99%" columns="1" cellpadding="0" cellspacing="0" border="0" columnClasses="AlignTop">
-           <ui:include src="../common/TopNav.xhtml" />
-           </h:panelGrid>
-           <h:panelGrid id="main_content_pnl" width="100%" columns="1" cellpadding="2" cellspacing="2" border="0"
+       <div class="MainDiv">
+            <ui:include src="../common/TopNav.xhtml" />
+            <h:panelGrid id="main_content_pnl" width="100%" columns="1" cellpadding="0" cellspacing="0" border="0"
                columnClasses="AlignTop">
                <ui:insert name="content">default content</ui:insert>
            </h:panelGrid>

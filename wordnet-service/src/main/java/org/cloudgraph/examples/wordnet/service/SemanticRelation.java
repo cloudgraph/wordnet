@@ -2,10 +2,10 @@ package org.cloudgraph.examples.wordnet.service;
 
 import java.util.List;
 
-import org.cloudgraph.examples.wordnet.Samples;
-import org.cloudgraph.examples.wordnet.Semlinks;
-import org.cloudgraph.examples.wordnet.Senses;
-import org.cloudgraph.examples.wordnet.Synsets;
+import org.cloudgraph.examples.wordnet.model.Samples;
+import org.cloudgraph.examples.wordnet.model.Semlinks;
+import org.cloudgraph.examples.wordnet.model.Senses;
+import org.cloudgraph.examples.wordnet.model.Synsets;
 
 public class SemanticRelation {
 	private Semlinks link;
