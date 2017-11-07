@@ -49,10 +49,10 @@ import commonj.sdo.helper.XMLDocument;
  * it is necessary to run 4 import mapreduce jobs, so we export the data into 4 files as below. 
  * There may be other ways to export Wordnet but below are several examples.  
  *   
- * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-ref.xml -size 10000 -export all_refs
- * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-synsets.xml -size 10000 -export synsets
- * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-words.xml -size 10000 -export words_and_senses
- * java -jar ./wordnet-export-0.5.2/wordnet-export-0.5.2.jar -file wordnet-links.xml -size 10000 -export all_links 
+ * java -jar ./wordnet-repo-0.5.2/wordnet-repo-0.5.2.jar -file wordnet-ref.xml -size 10000 -export all_refs
+ * java -jar ./wordnet-repo-0.5.2/wordnet-repo-0.5.2.jar -file wordnet-synsets.xml -size 10000 -export synsets
+ * java -jar ./wordnet-repo-0.5.2/wordnet-repo-0.5.2.jar -file wordnet-words.xml -size 10000 -export words_and_senses
+ * java -jar ./wordnet-repo-0.5.2/wordnet-repo-0.5.2.jar -file wordnet-links.xml -size 10000 -export all_links 
  */
 public class RDBStandaloneExport {
     protected SDODataAccessClient rdbService;

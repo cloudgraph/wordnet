@@ -29,8 +29,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.2.2</plasma.version>
-          <cloudgraph.version>0.6.2</cloudgraph.version>
+          <plasma.version>1.2.4</plasma.version>
+          <cloudgraph.version>0.6.3</cloudgraph.version>
   </properties>
                
   <repositories>
@@ -159,8 +159,9 @@
 	                    </systemProperties>
 	                    
 	                    <excludes>
-	                    <exclude>**/WordnetHBaseServiceTest**/**</exclude>
-<!-- 	                    <exclude>**/WordnetCassandraServiceTest**/**</exclude> -->
+<!-- 	                    <exclude>**/WordnetHBaseServiceTest**/**</exclude> -->
+	                    <exclude>**/WordnetCassandraServiceTest**/**</exclude>
+	                    <exclude>**/WordnetMySqlServiceTest**/**</exclude>
 	                    </excludes>
                     </configuration>
                   </execution>
@@ -172,9 +173,9 @@
                     <argLine>-Xms128M -Xmx500M -Xloggc:wordnet-gc.log</argLine>                      
                       --> 
                     <!-- debugging -->  
-                       <!--   
+                       <!--      
                     <argLine>-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8002,server=y,suspend=y</argLine>                      
-                               -->   
+                          -->             
                     <!-- profiling  -->
                     <!--
                     <argLine>-Xrunhprof:cpu=samples,depth=25</argLine>  

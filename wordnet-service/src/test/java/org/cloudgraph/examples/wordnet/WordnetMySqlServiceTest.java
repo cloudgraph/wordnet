@@ -8,47 +8,33 @@ import org.cloudgraph.common.CommonTest;
 import org.cloudgraph.config.QueryFetchType;
 import org.cloudgraph.examples.wordnet.service.WordRelations;
 import org.cloudgraph.examples.wordnet.service.Wordnet;
-import org.cloudgraph.examples.wordnet.service.WordnetService;
 import org.cloudgraph.examples.wordnet.service.WordnetServiceImpl;
+import org.plasma.config.DataAccessProviderName;
 import org.plasma.sdo.core.CoreNode;
 
-public class WordnetHBaseServiceTest extends CommonTest {
+public class WordnetMySqlServiceTest extends CommonTest {
 	
-	private WordnetService service;
+	private WordnetServiceImpl service;
 	
     public void setUp() throws Exception {
-    	 this.service = new WordnetServiceImpl();
-    }
-     
-    /* 
-    public void testWord() {
-    	Wordnet wordnet = this.service.getAllRelations("fallow");
-    	assertTrue(wordnet != null);
-    	List<WordRelations> relations = wordnet.getRelations();
-    	assertTrue(relations != null);
-    	try {
-			log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    */ 
-      
-    /*
+    	  
+    	 this.service = new WordnetServiceImpl(DataAccessProviderName.JDBC);
+    }    
+
     public void testSynonyms() throws IOException {
    	    Wordnet wordnet = this.service.getSynonyms("beautiful", QueryFetchType.PARALLEL);
     	List<WordRelations> relations = wordnet.getRelations();
     	assertTrue(relations != null);
     	//assertTrue(relations.size() == 1);
     	//log.info(serializeGraph(wordnet.getWord().getDataGraph()));
-    	 
+    	/* 
     	try {
 			log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		 
     	CoreNode rootNode = (CoreNode)wordnet.getWord();
     	Long assemTime = (Long)rootNode.getValueObject().get(
@@ -58,23 +44,22 @@ public class WordnetHBaseServiceTest extends CommonTest {
     	Long nodeCount = (Long)rootNode.getValueObject().get(
         		CloudGraphConstants.GRAPH_NODE_COUNT);
     	log.info("threads: " + threadCount + ", nodes: " + nodeCount + ", time: " + assemTime);
-    	assertTrue(nodeCount == 139);
+    	assertTrue(nodeCount == 143);
     }
-    */
-     
-    public void testAllRelationsConcurrent() throws IOException {
-    	Wordnet wordnet = this.service.getAllRelations("city", 
-    			QueryFetchType.SERIAL);
+    
+    public void testWord() {
+    	Wordnet wordnet = this.service.getAllRelations("city", QueryFetchType.PARALLEL);
+    	assertTrue(wordnet != null);
     	List<WordRelations> relations = wordnet.getRelations();
     	assertTrue(relations != null);
-    	//assertTrue(relations.size() == 1);
-    	//log.info(serializeGraph(wordnet.getWord().getDataGraph()));
+    	/*
     	try {
-			//log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
-		} catch (Exception e) {
+			log.info(ServiceTestUtils.serializeGraph(wordnet.getWord().getDataGraph()));
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
     	CoreNode rootNode = (CoreNode)wordnet.getWord();
     	Long assemTime = (Long)rootNode.getValueObject().get(
         		CloudGraphConstants.GRAPH_ASSEMBLY_TIME);
@@ -83,6 +68,5 @@ public class WordnetHBaseServiceTest extends CommonTest {
     	Long nodeCount = (Long)rootNode.getValueObject().get(
         		CloudGraphConstants.GRAPH_NODE_COUNT);
     	log.info("threads: " + threadCount + ", nodes: " + nodeCount + ", time: " + assemTime);
-    }
-     
+    }    
 }

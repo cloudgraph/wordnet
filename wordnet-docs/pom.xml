@@ -30,7 +30,7 @@
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
           <plasma.version>1.2.2</plasma.version>
-          <cloudgraph.version>0.6.2</cloudgraph.version>
+          <cloudgraph.version>0.6.3</cloudgraph.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <yworks.uml.path>${basedir}/../doclets/yworks-uml-doclet-3.0_01-jdk1.5</yworks.uml.path>                                             
   </properties>

@@ -58,7 +58,7 @@
                       value="Round Trip Time (Millis):" 
                       title="The average time in milliseconds taken for a data store round trip. Note: the high level of recursion and connectivity within the wordnet data requires each entity be modeled as a separate row. Each assembly of a graph node within this model therefore represents a data store round trip"/>
                   <h:outputText styleClass="StatText"  
-                      value="#{WordBean.hbaseWordnet.graphNodeAssemblyTime}"
+                      value="#{WordBean.cassandraWordnet.graphNodeAssemblyTime}"
                       title="The average time in milliseconds taken for a data store round trip. Note: the high level of recursion and connectivity within the wordnet data requires each entity be modeled as a separate row. Each assembly of a graph node within this model therefore represents a data store round trip">
                       <f:convertNumber minFractionDigits="1" maxFractionDigits="1"/>
                   </h:outputText>                

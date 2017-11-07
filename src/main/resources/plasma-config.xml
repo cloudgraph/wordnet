@@ -18,8 +18,12 @@
         </GlobalProvisioning>            
     
         <Namespace uri="http://cloudgraph.org/examples/wordnet"
-            artifact="http://wordnet.mdxml">
+            artifact="http://wordnet.uml">
             <Provisioning packageName="org.cloudgraph.examples.wordnet.model"/>
+  		</Namespace>
+        <Namespace uri="http://cloudgraph.org/examples/dummy"
+            artifact="http://wordnet.uml">
+            <Provisioning packageName="org.cloudgraph.examples.wordnet.dummy"/>
   		</Namespace>
   		    
  		 
@@ -62,12 +66,12 @@
                 <Property name="org.apache.commons.dbcp.timeBetweenEvictionRunsMillis">30000</Property>
                 <Property name="org.apache.commons.dbcp.minEvictableIdleTimeMillis">40000</Property>
    
-
-                        <Concurrency 
+                <Concurrency 
                     pessimisticLockTimeoutMillis="300000"/>
                               
-                <NamespaceLink uri="http://www.magicdraw.com/schemas/Plasma_SDO_Profile.xmi"/>
-            </DataAccessProvider>
+                <NamespaceLink uri="http://cloudgraph.org/examples/wordnet"/>
+                <NamespaceLink uri="http://cloudgraph.org/examples/dummy"/>
+           </DataAccessProvider>
                   
         </DataAccessService>
         <DataAccessService dataStoreType="NOSQL">   
@@ -80,13 +84,13 @@
                 <Concurrency 
                     pessimisticLockTimeoutMillis="300000"/>
                 
-                <!-- links HBASE specific DAS to SDO namespace configs -->                 
+                <!-- 
                 <NamespaceLink uri="http://cloudgraph.org/examples/wordnet"/>
-               
+                -->
               
             </DataAccessProvider>
         </DataAccessService> 
-               
+        <!--        
         <DataAccessService dataStoreType="NOSQL">   
 
             <DataAccessProvider name="CASSANDRA"
@@ -96,20 +100,23 @@
                 <Concurrency 
                     pessimisticLockTimeoutMillis="300000"/>
                 
-                <!-- links Cassandra specific DAS to SDO namespace configs -->                 
-                <NamespaceLink uri="http://cloudgraph.org/examples/wordnet"/>
-               
-              
             </DataAccessProvider>
         </DataAccessService> 
-  	      	
+  	     -->  	
     </SDO>
     
     <Repository> 
+     
+        <Artifact name="wordnet.uml"
+            urn="wordnet.uml" 
+            namespaceUri="http://wordnet.uml"/>
+        
+        <!--   
         <Artifact name="wordnet.mdxml"
             urn="wordnet.mdxml" 
             namespaceUri="http://wordnet.mdxml"/>
-             
+        --> 
+              
     </Repository>
     
   

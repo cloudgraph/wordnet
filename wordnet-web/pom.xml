@@ -30,7 +30,7 @@
         <servlet-api-scope>compile</servlet-api-scope>
         <javaee-api-scope>compile</javaee-api-scope>
           <plasma.version>1.2.2</plasma.version>
-          <cloudgraph.version>0.6.2</cloudgraph.version>
+          <cloudgraph.version>0.6.3</cloudgraph.version>
     </properties>
     <repositories>
         <repository>
@@ -87,11 +87,13 @@
             <artifactId>commons-el</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--   
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
         </dependency>
+        -->
 	    <dependency>
 	        <groupId>org.jdom</groupId>
 	        <artifactId>jdom</artifactId>

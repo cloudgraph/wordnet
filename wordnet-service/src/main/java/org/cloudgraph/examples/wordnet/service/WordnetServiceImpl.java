@@ -55,31 +55,25 @@ public class WordnetServiceImpl implements WordnetService {
 	public DataAccessProviderName getProvider() {
 		return this.provider;
 	}
-
+	
 	@Override
-	public Wordnet getAllRelations(String lemma) {
-		return getAllRelations(lemma, 0);
+	public Wordnet getAllRelations(String lemma) {	
+		return getAllRelations(lemma, null);
 	}
 	
 	@Override
-	public Wordnet getAllRelations(String lemma, QueryFetchType fetchType) {
-		return getAllRelations(lemma, 0, fetchType);
-	}
-	
-	@Override
-	public Wordnet getAllRelations(String lemma, long wordid) {	
-		return getAllRelations(lemma, 0, null);
-	}	
-	 
-	private Wordnet getAllRelations(String lemma, long wordid, QueryFetchType fetchType) {		
+	public Wordnet getAllRelations(String lemma, QueryFetchType fetchType) {		
 		List<WordRelations> relations = new ArrayList<WordRelations>();		
-		Query query = createRelationQuery(lemma, wordid);		
+		Query query = createRelationQuery(lemma);		
 		if (fetchType != null)
 			query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___FETCHTYPE.value(), 
 					fetchType.value());
 		
+		query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___THREAD___DEPTH___MAX.value(),
+				"10");
+		
 		DataGraph[] graphs = this.service.find(query);
-		Words word = this.getWord(graphs, lemma, wordid);
+		Words word = this.getWord(graphs, lemma);
 		if (word == null)
 			return null;
 		
@@ -111,15 +105,25 @@ public class WordnetServiceImpl implements WordnetService {
 	
 	@Override
 	public Wordnet getSynonyms(String lemma) {
-		return getSynonyms(lemma, 0);
+		return getSynonyms(lemma, null);
 	}
-	
+		
 	@Override
-	public Wordnet getSynonyms(String lemma, long wordid) {
+	public Wordnet getSynonyms(String lemma, QueryFetchType fetchType) {
 		List<WordRelations> relations = new ArrayList<WordRelations>();		
-		Query query = createSynonymQuery(lemma, wordid);
+		Query query = createSynonymQuery(lemma);
+		if (fetchType != null) {
+			query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___FETCHTYPE.value(), 
+					fetchType.value());
+			query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___THREADPOOL___SIZE___MIN.value(), 
+					"50");
+			query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___THREADPOOL___SIZE___MAX.value(), 
+					"50");
+		}
+		query.addConfigurationProperty(ConfigurationProperty.CLOUDGRAPH___QUERY___THREAD___DEPTH___MAX.value(),
+				"10");
 		DataGraph[] graphs = this.service.find(query);
-		Words word = this.getWord(graphs, lemma, 0);
+		Words word = this.getWord(graphs, lemma);
 		if (word == null)
 			return null;
 		
@@ -150,7 +154,7 @@ public class WordnetServiceImpl implements WordnetService {
 		
 	}
 	
-	private Words getWord(DataGraph[] graphs, String lemma, long wordid) {
+	private Words getWord(DataGraph[] graphs, String lemma) {
 		for (DataGraph graph : graphs) {
 			if (log.isDebugEnabled())
 			try {
@@ -278,7 +282,7 @@ public class WordnetServiceImpl implements WordnetService {
 			lexicalRelations.remove(key);
 	}
 	
-	private Query createSynonymQuery(String lemma, long wordid) {
+	private Query createSynonymQuery(String lemma) {
 		QWords query = QWords.newQuery();
 		QSemlinks semlink = QSemlinks.newQuery();
 		Expression predicate = semlink.linktypes().link().eq("similar");
@@ -300,15 +304,12 @@ public class WordnetServiceImpl implements WordnetService {
 		    .select(query.senses().synsets().semlinks(predicate).synsets1().senses().wildcard())  
 		    .select(query.senses().synsets().semlinks(predicate).synsets1().senses().words().wildcard())  
 		;
-		if (wordid > 0)
-		    query.where(query.lemma().eq(lemma).and(query.wordid().eq(wordid)));
-		else
-			query.where(query.lemma().eq(lemma));
+		query.where(query.lemma().eq(lemma));
 		
 		return query;
 	}
 	
-	private Query createRelationQuery(String lemma, long wordid) {
+	private Query createRelationQuery(String lemma) {
 		QWords query = QWords.newQuery();
 		query.select(query.wildcard())
 		    .select(query.casedwords().wildcard())
@@ -339,10 +340,7 @@ public class WordnetServiceImpl implements WordnetService {
 		    .select(query.senses().synsets().lexlinks().synsets1().senses().wildcard())  
 		    .select(query.senses().synsets().lexlinks().synsets1().senses().words().wildcard())  
 		;
-		//if (wordid > 0)
-		//    query.where(query.lemma().eq(lemma).and(query.wordid().eq(wordid)));
-		//else
-			query.where(query.lemma().eq(lemma));
+		query.where(query.lemma().eq(lemma));
 		
 		return query;
 	}

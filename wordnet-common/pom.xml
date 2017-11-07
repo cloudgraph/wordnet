@@ -30,7 +30,7 @@
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
           <plasma.version>1.2.2</plasma.version>
-          <cloudgraph.version>0.6.2</cloudgraph.version>
+          <cloudgraph.version>0.6.3</cloudgraph.version>
   </properties>
                
   <repositories>

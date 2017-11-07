@@ -120,6 +120,8 @@ public class ReferenceDataCache
 	}
 	
 	private void map(long nodeCount, long milliseconds, Map<Integer, List<Long>> map) {
+		if (milliseconds > 10000)
+			return; // region in transition
 		for (int r : ranges) {
 			if (nodeCount < r) {
 				List<Long> values = map.get(r);
@@ -128,8 +130,11 @@ public class ReferenceDataCache
 					values = new ArrayList<Long>();
 					map.put(range, values);
 				}
+				long average = average(values);
+				if (milliseconds > (average * 2.5) && values.size() > 2)
+					return;
 				values.add(milliseconds);
-				break;
+				return;
 			}
 		}		
 	}
@@ -150,17 +155,25 @@ public class ReferenceDataCache
 		series.setLabel(name);  
 		for (int r : ranges) {
 			List<Long> values = map.get(r);
-			if (values == null)
+			long average = average(values);
+			if (average == 0)
 				continue;
-			long total = 0;
-			for (Long value : values) {
-				total += value.longValue();
-			}
-			 
-			long average = total / values.size();
 			series.set(String.valueOf(r), average);
 		} 
 		return series;
+	}
+	
+	private long average(List<Long> values)
+	{
+		if (values == null || values.size() == 0)
+			return 0;
+		long total = 0;
+		for (Long value : values) {
+			total += value.longValue();
+		}
+		 
+		long average = total / values.size();
+		return average;
 	}
 	
 	public synchronized  CartesianChartModel getRdbmsCategoryModel() {  

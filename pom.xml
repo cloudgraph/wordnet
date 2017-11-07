@@ -4,7 +4,7 @@
 
   <groupId>org.cloudgraph</groupId>
   <artifactId>wordnet</artifactId>
-  <version>0.5.2</version>
+  <version>0.5.3</version>
   <packaging>pom</packaging>
   <name>wordnet</name>
   <description>CloudGraph HBase Example using Wordnet Lexical Database</description>  
@@ -32,8 +32,8 @@
                
   <properties> 
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          <plasma.version>1.2.2</plasma.version>
-          <cloudgraph.version>0.6.2</cloudgraph.version>
+          <plasma.version>1.3.3</plasma.version>
+          <cloudgraph.version>1.0.6</cloudgraph.version>
   </properties>
                
   <repositories>

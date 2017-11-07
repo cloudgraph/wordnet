@@ -41,9 +41,8 @@ public final class JavaWordCount {
 
 
     SparkConf sparkConf = new SparkConf().setAppName("JavaWordCount");
-    JavaSparkContext ctx = new JavaSparkContext(sparkConf);
-    //JavaRDD<String> lines = ctx.textFile("/user/root/examples/input-data/text/data.txt", 1);
-    JavaRDD<String> lines = ctx.textFile("hdfs://u16551142.onlinehome-server.com:9000/tmp/wordnetxml/wordnet-ref.xml");
+    JavaSparkContext jsc = new JavaSparkContext(sparkConf);
+    JavaRDD<String> lines = jsc.textFile("hdfs://u16551142.onlinehome-server.com:9000/user/root/examples/input-data/text/data.txt", 1);
 
     JavaRDD<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
       @Override
@@ -70,6 +69,6 @@ public final class JavaWordCount {
     for (Tuple2<?,?> tuple : output) {
       log.info("word: \t" + tuple._1() + ": \t" + tuple._2());
     }
-    ctx.stop();
+    jsc.stop();
   }
 }
